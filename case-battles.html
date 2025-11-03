@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitsune Unboxing - Case Battles</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="site-title">Kitsune Unboxing</h1>
+                <nav class="main-nav">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#"><i class="fas fa-gamepad"></i> <span class="nav-item-text">GAMES <span class="dropdown-arrow">▼</span></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="case-battles.html"><i class="fas fa-swords"></i> Case Battles</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="cases.html"><i class="fas fa-box-open"></i> <span class="nav-item-text">CASES</span></a></li>
+                        <li><a href="#"><i class="fas fa-dice"></i> <span class="nav-item-text">JACKPOT</span></a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> <span class="nav-item-text">REWARDS</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="balance">
+                    <i class="fas fa-coins coin-icon"></i>
+                    <span class="balance-amount">0.00</span>
+                </div>
+                <div class="balance">
+                    <i class="fas fa-gem gem-icon"></i>
+                    <span class="balance-amount">0</span>
+                </div>
+                <button class="add-funds-btn"><i class="fas fa-plus"></i></button>
+                <button class="login-steam-btn"><i class="fab fa-steam"></i> Login with Steam</button>
+            </div>
+        </header>
+
+        <div class="main-content-area">
+            <!-- Left Sidebar -->
+            <aside class="left-sidebar">
+                <div class="online-players-status">
+                    <span class="online-dot"></span> <span id="online-players-count"></span>&nbsp;ONLINE
+                </div>
+                <div class="chat-box">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Chat messages will be appended here by JavaScript -->
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type your message...">
+                        <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content for Case Battles -->
+            <main class="main-content case-battles-page">
+                <div class="case-battles-header-section">
+                    <div class="game-modes">
+                        <a href="#" class="game-mode-tab">COIN FLIP</a>
+                        <a href="#" class="game-mode-tab">DICE DUEL</a>
+                        <a href="#" class="game-mode-tab active">CASE BATTLE</a>
+                    </div>
+                    <button class="create-battle-btn">CREATE BATTLE</button>
+                </div>
+
+                <div class="case-battles-filters">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active">ALL BATTLES</button>
+                        <button class="filter-tab">READY TO JOIN</button>
+                    </div>
+                    <div class="price-filter">
+                        <span>Price from</span>
+                        <input type="text" placeholder="Min">
+                        <span>to</span>
+                        <input type="text" placeholder="Max">
+                    </div>
+                    <div class="sort-by">
+                        <span>Sort by</span>
+                        <select>
+                            <option>Highest price first</option>
+                            <option>Lowest price first</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="case-type-filters">
+                    <div class="case-type-toggle">
+                        <i class="fas fa-times"></i> Classic
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-hat-wizard"></i> Crazy
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-share-alt"></i> Shared
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-bolt"></i> Fast
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-crown"></i> Jackpot
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-hand-rock"></i> Clutch
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-skull"></i> Terminal
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="case-type-toggle">
+                        <i class="fas fa-users"></i> Community
+                        <label class="switch">
+                            <input type="checkbox" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="player-count-filter">
+                        <span>Players</span>
+                        <button class="player-btn active">2</button>
+                        <button class="player-btn">3</button>
+                        <button class="player-btn">4</button>
+                        <button class="player-btn">5</button>
+                        <button class="player-btn">6</button>
+                    </div>
+                </div>
+
+                <div class="active-cases-container">
+                    <!-- Example Case Battle Card -->
+                    <div class="case-battle-card">
+                        <div class="card-header">
+                            <i class="fas fa-coins coin-icon"></i> 10 <span class="battle-value">754.52</span>
+                            <span class="unboxed-value">Unboxed: <i class="fas fa-coins coin-icon"></i> 1,987.05</span>
+                        </div>
+                        <div class="case-items">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case1" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case2" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case3" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case4" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case5" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=Case6" alt="Case Item">
+                        </div>
+                        <div class="card-footer">
+                            <div class="players-avatars">
+                                <img src="https://via.placeholder.com/30/ff00ff/ffffff?text=P1" alt="Player 1" class="player-avatar">
+                                <img src="https://via.placeholder.com/30/8a2be2/ffffff?text=P2" alt="Player 2" class="player-avatar">
+                                <i class="fas fa-times-circle vs-icon"></i>
+                                <img src="https://via.placeholder.com/30/00ff00/ffffff?text=P3" alt="Player 3" class="player-avatar">
+                                <img src="https://via.placeholder.com/30/00bfff/ffffff?text=P4" alt="Player 4" class="player-avatar">
+                            </div>
+                            <button class="watch-battle-btn">WATCH BATTLE</button>
+                        </div>
+                    </div>
+                    <!-- Another Example Case Battle Card -->
+                    <div class="case-battle-card">
+                        <div class="card-header">
+                            <i class="fas fa-coins coin-icon"></i> 11 <span class="battle-value">687.41</span>
+                            <span class="unboxed-value">Unboxed: <i class="fas fa-coins coin-icon"></i> 0.00</span>
+                        </div>
+                        <div class="case-items">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=CaseA" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=CaseB" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=CaseC" alt="Case Item">
+                            <img src="https://via.placeholder.com/80x60/2a2a2a/ffffff?text=CaseD" alt="Case Item">
+                        </div>
+                        <div class="card-footer">
+                            <div class="players-avatars">
+                                <img src="https://via.placeholder.com/30/ff00ff/ffffff?text=P1" alt="Player 1" class="player-avatar">
+                                <img src="https://via.placeholder.com/30/8a2be2/ffffff?text=P2" alt="Player 2" class="player-avatar">
+                                <i class="fas fa-times-circle vs-icon"></i>
+                                <img src="https://via.placeholder.com/30/00ff00/ffffff?text=P3" alt="Player 3" class="player-avatar">
+                            </div>
+                            <button class="watch-battle-btn">WATCH BATTLE</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Sidebar - Removed as per user request -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="case-battles-script.js"></script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo.png" alt="Kitsune Logo">
+            </div>
+            <div class="footer-links">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="sweepstakes-rules.html">Sweepstakes Rules</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="kyc-aml-policy.html">KYC / AML Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Kitsune Technologies LLC</p>
+                <p>Domain: <a href="https://playkitsune.lol">playkitsune.lol</a></p>
+                <p>Email: <a href="mailto:support@playkitsune.lol">support@playkitsune.lol</a></p>
+            </div>
+            <div class="footer-social">
+                <h3>Follow Us</h3>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kitsune Technologies LLC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Purchase Packages</h2>
+            <div class="package-grid">
+                <div class="package-card" style="background: linear-gradient(to right, #ffcc00, #ff9900);">
+                    <h3>Starter Pack</h3>
+                    <p>1000 Gold Coins</p>
+                    <p>+10 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $9.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #ff66b2, #ff3399);">
+                    <h3>Bronze Pack</h3>
+                    <p>2000 Gold Coins</p>
+                    <p>+20 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $19.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #87ceeb, #4682b4);">
+                    <h3>Silver Pack</h3>
+                    <p>3500 Gold Coins</p>
+                    <p>+35 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $34.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #a020f0, #ff00ff);">
+                    <h3>Gamer's Boost</h3>
+                    <p>5000 Gold Coins</p>
+                    <p>+50 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $49.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #00bfff, #007bff);">
+                    <h3>Pro Bundle</h3>
+                    <p>10000 Gold Coins</p>
+                    <p>+100 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $99.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #39ff14, #00ff00);">
+                    <h3>Legendary Loot</h3>
+                    <p>25000 Gold Coins</p>
+                    <p>+250 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $249.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #ff4500, #ff8c00);">
+                    <h3>Ultimate Fortune</h3>
+                    <p>50000 Gold Coins</p>
+                    <p>+500 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $499.99</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

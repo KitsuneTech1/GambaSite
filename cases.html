@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitsune Unboxing - Cases</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="site-title">Kitsune Unboxing</h1>
+                <nav class="main-nav">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#"><i class="fas fa-gamepad"></i> <span class="nav-item-text">GAMES <span class="dropdown-arrow">▼</span></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="case-battles.html"><i class="fas fa-swords"></i> Case Battles</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="cases.html"><i class="fas fa-box-open"></i> <span class="nav-item-text">CASES</span></a></li>
+                        <li><a href="#"><i class="fas fa-dice"></i> <span class="nav-item-text">JACKPOT</span></a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> <span class="nav-item-text">REWARDS</span></a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="header-right">
+                <div class="balance">
+                    <i class="fas fa-coins coin-icon"></i>
+                    <span class="balance-amount">0.00</span>
+                </div>
+                <div class="balance">
+                    <i class="fas fa-gem gem-icon"></i>
+                    <span class="balance-amount">0</span>
+                </div>
+                <button class="add-funds-btn"><i class="fas fa-plus"></i></button>
+                <button class="login-steam-btn"><i class="fab fa-steam"></i> Login with Steam</button>
+            </div>
+        </header>
+
+        <div class="main-content-area">
+            <!-- Left Sidebar -->
+            <aside class="left-sidebar">
+                <div class="online-players-status">
+                    <span class="online-dot"></span> <span id="online-players-count"></span>&nbsp;ONLINE
+                </div>
+                <div class="chat-box">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Chat messages will be appended here by JavaScript -->
+                    </div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type your message...">
+                        <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content for Cases -->
+            <main class="main-content cases-page">
+                <div class="cases-top-bar">
+                    <div class="cases-top-left">
+                        <button class="cases-tab active">BEST DROPS</button>
+                        <button class="cases-tab">RECENT DROPS</button>
+                    </div>
+                    <div class="cases-top-right">
+                        <button class="create-case-btn"><i class="fas fa-plus"></i> CREATE A CASE</button>
+                        <button class="your-cases-btn">YOUR CASES</button>
+                    </div>
+                </div>
+
+                <div class="cases-filters">
+                    <div class="cases-filter-group">
+                        <button class="cases-filter-btn active">OFFICIAL</button>
+                        <button class="cases-filter-btn">COMMUNITY</button>
+                    </div>
+                    <div class="cases-filter-group">
+                        <button class="cases-filter-btn active">ALL</button>
+                        <button class="cases-filter-btn">NEW</button>
+                        <button class="cases-filter-btn">CASECEPTION</button>
+                        <button class="cases-filter-btn">KNIVES</button>
+                        <button class="cases-filter-btn">GLOVES</button>
+                        <button class="cases-filter-btn">PARTNERS</button>
+                    </div>
+                    <div class="cases-filter-group">
+                        <button class="cases-filter-btn">1%</button>
+                        <button class="cases-filter-btn">5%</button>
+                        <button class="cases-filter-btn">10%</button>
+                        <button class="cases-filter-btn">20%</button>
+                        <button class="cases-filter-btn">25%</button>
+                        <button class="cases-filter-btn">50%</button>
+                        <button class="cases-filter-btn">15%</button>
+                    </div>
+                </div>
+
+                <div class="cases-search-sort-filter">
+                    <div class="search-cases">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search cases">
+                    </div>
+                    <div class="price-range">
+                        <span>Price Range</span>
+                        <select>
+                            <option>All Prices</option>
+                        </select>
+                    </div>
+                    <div class="order-by">
+                        <span>Order by</span>
+                        <select>
+                            <option>Recommended</option>
+                        </select>
+                    </div>
+                    <div class="game-type-filter">
+                        <span>Game Type</span>
+                        <div class="game-type-slider">
+                            <span>Play it Safe</span>
+                            <input type="range" min="0" max="100" value="50" class="slider-range">
+                            <span>All In!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cases-grid">
+                    <!-- Case cards will be dynamically loaded here -->
+                </div>
+
+                <!-- Unboxing Simulator Section -->
+                <div id="unboxingSimulator" class="unboxing-simulator">
+                    <span class="close-unboxing-button">&times;</span>
+                    <h2>Case Opening</h2>
+                    <div class="unboxing-display">
+                        <!-- Unboxed item will appear here -->
+                        <div id="unboxedItem" class="unboxed-item"></div>
+                    </div>
+                    <button id="openCaseBtnSimulator" class="open-case-btn-simulator">OPEN CASE</button>
+                </div>
+            </main>
+
+            <!-- Right Sidebar - Removed as per user request -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <script src="cases-script.js"></script>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="logo.png" alt="Kitsune Logo">
+            </div>
+            <div class="footer-links">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="terms-of-service.html">Terms of Service</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="sweepstakes-rules.html">Sweepstakes Rules</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="kyc-aml-policy.html">KYC / AML Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>Contact</h3>
+                <p>Kitsune Technologies LLC</p>
+                <p>Domain: <a href="https://playkitsune.lol">playkitsune.lol</a></p>
+                <p>Email: <a href="mailto:support@playkitsune.lol">support@playkitsune.lol</a></p>
+            </div>
+            <div class="footer-social">
+                <h3>Follow Us</h3>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Kitsune Technologies LLC. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Purchase Packages</h2>
+            <div class="package-grid">
+                <div class="package-card" style="background: linear-gradient(to right, #ffcc00, #ff9900);">
+                    <h3>Starter Pack</h3>
+                    <p>1000 Gold Coins</p>
+                    <p>+10 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $9.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #ff66b2, #ff3399);">
+                    <h3>Bronze Pack</h3>
+                    <p>2000 Gold Coins</p>
+                    <p>+20 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $19.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #87ceeb, #4682b4);">
+                    <h3>Silver Pack</h3>
+                    <p>3500 Gold Coins</p>
+                    <p>+35 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $34.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #a020f0, #ff00ff);">
+                    <h3>Gamer's Boost</h3>
+                    <p>5000 Gold Coins</p>
+                    <p>+50 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $49.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #00bfff, #007bff);">
+                    <h3>Pro Bundle</h3>
+                    <p>10000 Gold Coins</p>
+                    <p>+100 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $99.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #39ff14, #00ff00);">
+                    <h3>Legendary Loot</h3>
+                    <p>25000 Gold Coins</p>
+                    <p>+250 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $249.99</button>
+                </div>
+                <div class="package-card" style="background: linear-gradient(to right, #ff4500, #ff8c00);">
+                    <h3>Ultimate Fortune</h3>
+                    <p>50000 Gold Coins</p>
+                    <p>+500 Gems (Free Bonus)</p>
+                    <button class="buy-btn">Buy for $499.99</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
