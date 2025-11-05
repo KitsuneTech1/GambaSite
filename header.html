@@ -1,0 +1,47 @@
+<header class="header">
+    <div class="header-left">
+        <h1 class="site-title"><a href="index.html" style="text-decoration: none; color: inherit;">Kitsune Unboxing</a></h1>
+        <nav class="main-nav">
+            <ul>
+                <li class="dropdown">
+                    <a href="#"><i class="fas fa-gamepad"></i> <span class="nav-item-text">GAMES <span class="dropdown-arrow">▼</span></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="case-battles.html"><i class="fas fa-swords"></i> Case Battles</a></li>
+                    </ul>
+                </li>
+                <li><a href="cases.html"><i class="fas fa-box-open"></i> <span class="nav-item-text">CASES</span></a></li>
+                <li><a href="#"><i class="fas fa-dice"></i> <span class="nav-item-text">JACKPOT</span></a></li>
+                <li><a href="#"><i class="fas fa-gift"></i> <span class="nav-item-text">REWARDS</span></a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="header-right">
+        <div class="balance">
+            <i class="fas fa-coins coin-icon"></i>
+            <span class="balance-amount">0.00</span>
+        </div>
+        <div class="balance">
+            <i class="fas fa-gem gem-icon"></i>
+            <span class="balance-amount">0</span>
+        </div>
+        <button class="add-funds-btn"><i class="fas fa-plus"></i></button>
+        <a href="https://api.playkitsune.lol/auth/steam">
+            <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Login with Steam">
+        </a>
+    </div>
+</header>
+
+<aside class="left-sidebar">
+    <div class="online-players-status">
+        <span class="online-dot"></span> <span id="online-players-count"></span>&nbsp;ONLINE
+    </div>
+    <div class="chat-box">
+        <div class="chat-messages" id="chat-messages">
+            <!-- Chat messages will be appended here by JavaScript -->
+        </div>
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button id="send-chat-btn"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</aside>

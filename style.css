@@ -494,6 +494,8 @@ body {
     display: flex;
     border-top: 1px solid #444; /* Separator for input */
     padding-top: 10px;
+    border-radius: 0 0 10px 10px; /* Match bottom corners of chat-box */
+    overflow: hidden; /* Ensure content respects container bounds */
 }
 
 .chat-input-container input {
@@ -502,8 +504,9 @@ body {
     border: 1px solid #444; /* Darker border */
     background-color: #3a3a3a; /* Darker input background */
     color: #f0f0f0;
-    border-radius: 5px 0 0 5px; /* More rounded corners */
+    border-radius: 5px 0 0 5px; /* More rounded corners on left */
     font-size: 0.95em;
+    border-right: none; /* Remove right border to blend with button */
 }
 
 .chat-input-container input:focus {
@@ -512,13 +515,32 @@ body {
 }
 
 .chat-input-container button {
-    background-color: #6a0dad; /* Purple send button */
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 10px 18px; /* More padding */
-    border-radius: 0 5px 5px 0; /* More rounded corners */
+    padding: 8px 12px;
+    border-radius: 0 5px 5px 0; /* More rounded corners on right */
     cursor: pointer;
     transition: background-color 0.3s ease;
+}
+
+/* User Info Styling */
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-left: 15px; /* Adjust as needed */
+    color: white;
+}
+
+.avatar {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    margin-right: 8px;
+}
+
+.username {
+    font-weight: bold;
 }
 
 .chat-input-container button:hover {
