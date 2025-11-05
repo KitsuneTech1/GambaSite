@@ -12,7 +12,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1 class="site-title">Kitsune Unboxing</h1>
+                <h1 class="site-title"><a href="index.html" style="text-decoration: none; color: inherit;"></a>Kitsune Unboxing</a></h1>
                 <nav class="main-nav">
                     <ul>
                         <li class="dropdown">
@@ -37,7 +37,9 @@
                     <span class="balance-amount">0</span>
                 </div>
                 <button class="add-funds-btn"><i class="fas fa-plus"></i></button>
-                <button class="login-steam-btn"><i class="fab fa-steam"></i> Login with Steam</button>
+                <a href="http://192.168.1.27:3000/auth/steam">
+                    <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Login with Steam">
+                </a>
             </div>
         </header>
 
@@ -82,13 +84,13 @@
                                 <span class="slider round"></span>
                             </label>
                         </div>
-                        <div class="toggle-group">
+                        <!-- <div class="toggle-group">
                             <i class="fas fa-dice-d6"></i> ROLL SPIN
                             <label class="switch">
                                 <input type="checkbox" checked>
                                 <span class="slider round"></span>
                             </label>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -98,6 +100,11 @@
                             <!-- Items will be dynamically loaded here -->
                         </div>
                         <div class="unboxing-line"></div>
+                        <div id="unboxedItemPopup" class="unboxed-item-popup">
+                            <img id="popupItemImage" src="" alt="Unboxed Item" class="popup-item-image">
+                            <p id="popupItemName" class="popup-item-name"></p>
+                            <p id="popupItemValue" class="popup-item-value"></p>
+                        </div>
                     </div>
                     <button id="openCaseButton" class="open-case-btn-simulator">OPEN 1 TIME <i class="fas fa-coins coin-icon"></i> <span id="openCasePrice">0.00</span></button>
                     <button class="demo-spin-btn">DEMO SPIN</button>

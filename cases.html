@@ -12,7 +12,7 @@
         <!-- Header -->
         <header class="header">
             <div class="header-left">
-                <h1 class="site-title">Kitsune Unboxing</h1>
+                <h1 class="site-title"><a href="index.html" style="text-decoration: none; color: inherit;"></a>Kitsune Unboxing</a></h1>
                 <nav class="main-nav">
                     <ul>
                         <li class="dropdown">
@@ -37,7 +37,9 @@
                     <span class="balance-amount">0</span>
                 </div>
                 <button class="add-funds-btn"><i class="fas fa-plus"></i></button>
-                <button class="login-steam-btn"><i class="fab fa-steam"></i> Login with Steam</button>
+                <a href="http://192.168.1.27:3000/auth/steam">
+                    <img src="https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png" alt="Login with Steam">
+                </a>
             </div>
         </header>
 
@@ -98,7 +100,7 @@
                 <div class="cases-search-sort-filter">
                     <div class="search-cases">
                         <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search cases">
+                        <input type="text" id="case-search-input" placeholder="Search cases">
                     </div>
                     <div class="price-range">
                         <span>Price Range</span>
@@ -126,16 +128,6 @@
                     <!-- Case cards will be dynamically loaded here -->
                 </div>
 
-                <!-- Unboxing Simulator Section -->
-                <div id="unboxingSimulator" class="unboxing-simulator">
-                    <span class="close-unboxing-button">&times;</span>
-                    <h2>Case Opening</h2>
-                    <div class="unboxing-display">
-                        <!-- Unboxed item will appear here -->
-                        <div id="unboxedItem" class="unboxed-item"></div>
-                    </div>
-                    <button id="openCaseBtnSimulator" class="open-case-btn-simulator">OPEN CASE</button>
-                </div>
             </main>
 
             <!-- Right Sidebar - Removed as per user request -->
