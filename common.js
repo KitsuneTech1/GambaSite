@@ -7,12 +7,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const headerPlaceholder = document.getElementById('header-placeholder');
             if (headerPlaceholder) {
                 headerPlaceholder.innerHTML = headerHtml;
-                // After header is loaded, initialize chat and auth
-                initializeChatAndOnlinePlayers();
-                handleAuth();
             }
         } catch (error) {
             console.error('Error loading header:', error);
+        }
+    }
+
+    // Function to load sidebar.html
+    async function loadSidebar() {
+        try {
+            const response = await fetch('sidebar.html');
+            const sidebarHtml = await response.text();
+            const sidebarPlaceholder = document.getElementById('sidebar-placeholder');
+            if (sidebarPlaceholder) {
+                sidebarPlaceholder.innerHTML = sidebarHtml;
+            }
+        } catch (error) {
+            console.error('Error loading sidebar:', error);
         }
     }
 
@@ -54,10 +65,18 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function initializeChatAndOnlinePlayers() {
+        console.log("Initializing chat and online players...");
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const sendChatBtn = document.getElementById('send-chat-btn');
         const onlinePlayersCount = document.getElementById('online-players-count');
+
+        if (!chatMessages) { console.warn("Chat messages element not found."); return; }
+        if (!chatInput) { console.warn("Chat input element not found."); return; }
+        if (!sendChatBtn) { console.warn("Send chat button element not found."); return; }
+        if (!onlinePlayersCount) { console.warn("Online players count element not found."); return; }
+
+        console.log("All chat and online player elements found.");
 
         function addChatMessage(username, message) {
             const messageElement = document.createElement('div');
@@ -77,23 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(generateRandomMessage, Math.random() * (10000 - 5000) + 5000);
 
         // Send message functionality (for user input, though not required to be functional)
-        if (sendChatBtn) {
-            sendChatBtn.addEventListener('click', () => {
-                const userMessage = chatInput.value.trim();
-                if (userMessage) {
-                    addChatMessage("You", userMessage); // Display user's message
-                    chatInput.value = '';
-                }
-            });
-        }
+        sendChatBtn.addEventListener('click', () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                addChatMessage("You", userMessage); // Display user's message
+                chatInput.value = '';
+            }
+        });
 
-        if (chatInput) {
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendChatBtn.click();
-                }
-            });
-        }
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendChatBtn.click();
+            }
+        });
 
         // Initial messages to populate the chat
         for (let i = 0; i < 5; i++) {
@@ -103,9 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Generate random online player count
         function updateOnlinePlayers() {
             const randomCount = Math.floor(Math.random() * (241 - 53 + 1)) + 53;
-            if (onlinePlayersCount) {
-                onlinePlayersCount.textContent = randomCount.toLocaleString();
-            }
+            onlinePlayersCount.textContent = randomCount.toLocaleString();
         }
 
         updateOnlinePlayers(); // Set initial count
@@ -123,10 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleAuth() {
+        console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get('token');
         const headerRight = document.querySelector('.header-right');
         const steamLoginButton = headerRight ? headerRight.querySelector('a[href="https://api.playkitsune.lol/auth/steam"]') : null;
+
+        if (!headerRight) { console.warn("Header right element not found for auth."); return; }
 
         if (token) {
             const decodedToken = parseJwt(token);
@@ -159,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateUI(displayName, avatarUrl) {
+        console.log("Updating UI with user info:", displayName, avatarUrl);
         const headerRight = document.querySelector('.header-right');
         if (!headerRight) return;
 
@@ -178,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showLoginButton() {
+        console.log("Showing login button.");
         const headerRight = document.querySelector('.header-right');
         if (!headerRight) return;
 
@@ -198,13 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearAuthData() {
+        console.log("Clearing authentication data.");
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userDisplayName');
         localStorage.removeItem('userAvatar');
     }
-
-    // Load the header first, then initialize chat and auth
-    loadHeader();
 
     // Dynamic Background Functionality (kept here as it's body-wide)
     const body = document.body;
@@ -233,21 +249,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(createParticle, 500);
 
     // Modal functionality (kept here as it's body-wide)
-    const addFundsBtn = document.querySelector('.add-funds-btn');
+    // Query modal elements at the top level, as they are in the main HTML, not dynamic.
     const purchaseModal = document.getElementById('purchaseModal');
     const closeButton = document.querySelector('.close-button');
 
     // Check if elements exist before adding event listeners
     if (purchaseModal) {
         purchaseModal.style.display = 'none'; // Ensure modal is hidden on load
-    }
-
-    if (addFundsBtn) {
-        addFundsBtn.addEventListener('click', () => {
-            if (purchaseModal) {
-                purchaseModal.style.display = 'flex';
-            }
-        });
     }
 
     if (closeButton) {
@@ -264,5 +272,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 purchaseModal.style.display = 'none';
             }
         }
+    });
+
+    // Load the header and sidebar first, then initialize chat and auth
+    Promise.all([loadHeader(), loadSidebar()]).then(() => {
+        // Now that header is loaded, query addFundsBtn
+        const addFundsBtn = document.querySelector('.add-funds-btn');
+        if (addFundsBtn) {
+            addFundsBtn.addEventListener('click', () => {
+                if (purchaseModal) {
+                    purchaseModal.style.display = 'flex';
+                }
+            });
+        } else {
+            console.warn("Add funds button not found after header load.");
+        }
+
+        initializeChatAndOnlinePlayers(); // This is where chat is initialized
+        handleAuth(); // This is where auth is initialized
     });
 });

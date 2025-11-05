@@ -826,6 +826,70 @@ body {
     font-size: 0.9em;
 }
 
+.price-range {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    position: relative; /* For positioning the slider */
+    min-width: 200px; /* Ensure enough space for the slider */
+}
+
+.slider-container {
+    position: relative;
+    width: 100%;
+    height: 20px; /* Height of the slider track */
+}
+
+.range-slider {
+    position: absolute;
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 5px; /* Height of the actual draggable part */
+    background: #555; /* Default track color */
+    border-radius: 5px;
+    outline: none;
+    margin: 0;
+    pointer-events: none; /* Allow clicks to pass through to the lower slider */
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #ff00ff; /* Pinkish thumb color */
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all; /* Make thumbs draggable */
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+    margin-top: -5px; /* Adjust thumb position to center on track */
+}
+
+.range-slider::-moz-range-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: #ff00ff; /* Pinkish thumb color */
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all; /* Make thumbs draggable */
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+}
+
+/* Style for the filled track between thumbs */
+.range-slider:nth-of-type(1) {
+    z-index: 2; /* Ensure min slider is on top for interaction */
+}
+
+.range-slider:nth-of-type(2) {
+    z-index: 1; /* Max slider behind min slider */
+}
+
+/* This is a tricky part, often requires JS to fill the track between two thumbs */
+/* For now, we'll rely on JS to update the background dynamically */
+
 .price-filter input::placeholder {
     color: #aaa;
 }
@@ -1042,11 +1106,109 @@ input:checked + .slider:before {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
 }
 
 .cases-top-left, .cases-top-right {
     display: flex;
     gap: 10px;
+    align-items: center; /* Align items vertically in the center */
+    flex-grow: 1; /* Allow both sections to grow */
+}
+
+.cases-top-left {
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the start */
+    gap: 15px; /* Increase gap between button and scroller */
+    flex-shrink: 1; /* Allow it to shrink */
+    min-width: 250px; /* Ensure it doesn't shrink too much */
+    max-width: 100%; /* Ensure it doesn't exceed parent width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    padding-right: 10px; /* Add some right padding to cases-top-left */
+    overflow: hidden; /* Hide any overflow from this container */
+    position: relative; /* For potential positioning contexts */
+}
+
+.cases-top-left > .cases-tab { /* Target the button directly */
+    width: fit-content; /* Allow button to size to its content */
+    margin-right: 10px; /* Add some margin to the right of the button */
+    box-sizing: border-box; /* Ensure padding and border are included in width */
+    white-space: nowrap; /* Prevent text from wrapping */
+    flex-shrink: 0; /* Prevent the button from shrinking */
+    padding: 10px 15px; /* Ensure consistent padding */
+    min-width: 100px; /* Give the button a minimum width */
+    text-align: center; /* Center the text in the button */
+    height: 40px; /* Set a fixed height for consistency */
+}
+
+.recent-drops-scroller-container {
+    flex-grow: 1; /* Allow it to take available space within cases-top-left */
+    flex-shrink: 1;
+    width: 100%; /* Ensure it takes full width of its parent */
+    overflow: hidden; /* Hide overflow for the scroller */
+    border-radius: 8px; /* Match scroller border-radius */
+    background-color: #2a2a2a; /* Match scroller background */
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3); /* Match scroller shadow */
+}
+
+.recent-drops-scroller {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling */
+    white-space: nowrap; /* Prevent items from wrapping */
+    gap: 10px;
+    padding: 5px 10px; /* Add horizontal padding to ensure items are not cut off */
+    width: 100%; /* Take full width of its container */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #555 #333; /* Firefox */
+}
+
+.recent-drops-scroller::-webkit-scrollbar {
+    height: 8px;
+}
+
+.recent-drops-scroller::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 10px;
+}
+
+.recent-drops-scroller::-webkit-scrollbar-thumb {
+    background-color: #555;
+    border-radius: 10px;
+    border: 2px solid #333;
+}
+
+.scroller-item {
+    display: inline-flex; /* Keep items in a line */
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #1c1c1c;
+    min-width: 80px; /* Minimum width for each skin item */
+    text-align: center;
+}
+
+.scroller-item img {
+    width: 60px;
+    height: 40px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.scroller-item .skin-name {
+    font-size: 0.7em;
+    color: #e0e0e0;
+    white-space: normal; /* Allow name to wrap */
+    max-width: 70px; /* Constrain name width */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.scroller-item .skin-price {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #ffcc00;
 }
 
 .cases-tab, .create-case-btn, .your-cases-btn {
@@ -1226,10 +1388,21 @@ input:checked + .slider:before {
     justify-content: space-between;
     width: 100%;
     align-items: center;
+    flex-wrap: wrap; /* Allow items to wrap if space is limited */
 }
 
 .case-rtp {
     background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-right: 5px; /* Add some space between RTP and Volatility */
+}
+
+.case-volatility {
+    background-color: #8a2be2; /* Purple background for volatility */
     color: white;
     padding: 5px 10px;
     border-radius: 5px;

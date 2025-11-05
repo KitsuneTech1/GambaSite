@@ -1,9 +1,10 @@
-const caseData = [
+export const caseData = [
     {
         id: "high-stakes",
         name: "High Stakes Case",
         price: 2.50,
         image: "all_skins_in_game/AK-47CaseHardened.png", // Using a placeholder image
+        volatility: "High", // Added volatility
         drops: [
             // High-value skins
             { name: "AWP | Dragon Lore", image: "all_skins_in_game/AWPDragonLore.png", odds: 0.0005, rarity: "legendary", stattrak: false, wears: [{ condition: "Factory New", value: 2000.00, odds: 1.0 }] },
@@ -29,6 +30,7 @@ const caseData = [
         name: "Dreams & Nightmares Case",
         price: 0.45,
         image: "https://cdn.csgoskins.gg/public/uih/items/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbl9jYXNlcy9jcmF0ZV9jb21tdW5pdHlfMzAuYzQ3MWEzZjc0YTI1NGM4MDc1NGY3ZGVlYzE5YWRhZjBkZjI2NmUyMy5wbmc-/auto/auto/85/notrim/21beb54cd2ee10122a102cbc870ee3e5.webp",
+        volatility: "Low", // Added volatility
         drops: [
             { name: "AWP | Chromatic Aberration", image: "all_skins_in_game/AWPChromaticAberration.png", odds: 0.008, rarity: "legendary", stattrak: false, wears: [{ condition: "Factory New", value: 50.00, odds: 0.4 }, { condition: "Minimal Wear", value: 25.00, odds: 0.3 }, { condition: "Field-Tested", value: 10.00, odds: 0.2 }, { condition: "Well-Worn", value: 5.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
             { name: "AK-47 | Neon Rider", image: "all_skins_in_game/AK-47NeonRider.png", odds: 0.01, rarity: "epic", stattrak: false, wears: [{ condition: "Factory New", value: 30.00, odds: 0.4 }, { condition: "Minimal Wear", value: 15.00, odds: 0.3 }, { condition: "Field-Tested", value: 8.00, odds: 0.2 }, { condition: "Well-Worn", value: 4.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
@@ -44,6 +46,7 @@ const caseData = [
         name: "Fracture Case",
         price: 0.42,
         image: "https://cdn.csgoskins.gg/public/uih/items/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbl9jYXNlcy9jcmF0ZV9jb21tdW5pdHlfMjYuYjI1MDk4YWY1YTQyODUwMDQwNTI3ODZlMjYxYmU0M2RlYzViODljZi5wbmc-/auto/auto/85/notrim/7130235e21e92d11f1ea81fa677cf379.webp",
+        volatility: "Low", // Added volatility
         drops: [
             { name: "AK-47 | Legion of Anubis", image: "all_skins_in_game/AK-47LegionofAnubis.png", odds: 0.008, rarity: "legendary", stattrak: false, wears: [{ condition: "Factory New", value: 50.00, odds: 0.4 }, { condition: "Minimal Wear", value: 25.00, odds: 0.3 }, { condition: "Field-Tested", value: 10.00, odds: 0.2 }, { condition: "Well-Worn", value: 5.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
             { name: "Desert Eagle | Emerald Jörmungandr", image: "all_skins_in_game/DesertEagleEmeraldJörmungandr.png", odds: 0.01, rarity: "epic", stattrak: false, wears: [{ condition: "Factory New", value: 30.00, odds: 0.4 }, { condition: "Minimal Wear", value: 15.00, odds: 0.3 }, { condition: "Field-Tested", value: 8.00, odds: 0.2 }, { condition: "Well-Worn", value: 4.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
@@ -59,6 +62,7 @@ const caseData = [
         name: "Operation Breakout Weapon Case",
         price: 9.46,
         image: "https://cdn.csgoskins.gg/public/uih/items/aHR0cHM6Ly9jZG4uY3Nnb3NraW5zLmdnL3B1YmxpYy9pbWFnZXMvYnVja2V0cy9lY29uL3dlYXBvbl9jYXNlcy9jcmF0ZV9jb21tdW5pdHlfNC5mMGQyMzg0ODUyN2I3YmUwZjFmYzk1NTZiMWYzZWNmYjExOTNlZTQwLnBuZw--/auto/auto/85/notrim/bdca454652af3fa481e82915701f0470.webp",
+        volatility: "Low", // Added volatility
         drops: [
             { name: "AWP | Asiimov", image: "all_skins_in_game/AWPAsiimov.png", odds: 0.008, rarity: "legendary", stattrak: false, wears: [{ condition: "Factory New", value: 50.00, odds: 0.4 }, { condition: "Minimal Wear", value: 25.00, odds: 0.3 }, { condition: "Field-Tested", value: 10.00, odds: 0.2 }, { condition: "Well-Worn", value: 5.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
             { name: "AK-47 | Redline", image: "all_skins_in_game/AK-47Redline.png", odds: 0.01, rarity: "epic", stattrak: false, wears: [{ condition: "Factory New", value: 30.00, odds: 0.4 }, { condition: "Minimal Wear", value: 15.00, odds: 0.3 }, { condition: "Field-Tested", value: 8.00, odds: 0.2 }, { condition: "Well-Worn", value: 4.00, odds: 0.05 }, { condition: "Battle-Scarred", value: 2.00, odds: 0.05 }] },
@@ -161,6 +165,7 @@ function generateCaseCard(caseObj) {
         <div class="case-card" data-case-id="${caseObj.id}">
             <div class="case-header">
                 <span class="case-rtp">${rtp}% RTP</span>
+                <span class="case-volatility">${caseObj.volatility} Volatility</span>
                 <i class="fas fa-star favorite-icon"></i>
             </div>
             <img src="${caseObj.image}" alt="${caseObj.name}" class="case-image">
@@ -177,29 +182,160 @@ function generateCaseCard(caseObj) {
 document.addEventListener('DOMContentLoaded', () => {
     const casesGrid = document.querySelector('.cases-grid');
     const caseSearchInput = document.getElementById('case-search-input');
+    const minPriceSlider = document.getElementById('min-price-slider');
+    const maxPriceSlider = document.getElementById('max-price-slider');
+    const currentMinPriceSpan = document.getElementById('current-min-price');
+    const currentMaxPriceSpan = document.getElementById('current-max-price');
+    const volatilitySlider = document.getElementById('volatility-slider');
+    const recentDropsScroller = document.querySelector('.recent-drops-scroller');
+
+    // Define a list of expensive skins for the scroller
+    const expensiveSkins = [
+        { name: "AWP | Dragon Lore", image: "all_skins_in_game/AWPDragonLore.png", price: 2000.00 },
+        { name: "AK-47 | Fire Serpent", image: "all_skins_in_game/AK-47FireSerpent.png", price: 500.00 },
+        { name: "AWP | Gungnir", image: "all_skins_in_game/AWPGungnir.png", price: 1500.00 },
+        { name: "AK-47 | Wild Lotus", image: "all_skins_in_game/AK-47WildLotus.png", price: 1200.00 },
+        { name: "AWP | Medusa", image: "all_skins_in_game/AWPMedusa.png", price: 1000.00 },
+        { name: "AK-47 | Gold Arabesque", image: "all_skins_in_game/AK-47GoldArabesque.png", price: 800.00 },
+        { name: "AWP | The Prince", image: "all_skins_in_game/AWPThePrince.png", price: 700.00 },
+        { name: "AK-47 | Hydroponic", image: "all_skins_in_game/AK-47Hydroponic.png", price: 400.00 },
+        { name: "AWP | Fade", image: "all_skins_in_game/AWPFade.png", price: 300.00 },
+        { name: "AK-47 | Neon Revolution", image: "all_skins_in_game/AK-47NeonRevolution.png", price: 150.00 },
+        { name: "AWP | Printstream", image: "all_skins_in_game/AWPPrintstream.png", price: 250.00 },
+        { name: "AK-47 | Bloodsport", image: "all_skins_in_game/AK-47Bloodsport.png", price: 180.00 },
+    ];
+
+    // Function to add a random expensive skin to the scroller
+    const addRandomExpensiveSkin = () => {
+        if (recentDropsScroller) {
+            const randomIndex = Math.floor(Math.random() * expensiveSkins.length);
+            const skin = expensiveSkins[randomIndex];
+
+            const scrollerItem = document.createElement('div');
+            scrollerItem.classList.add('scroller-item');
+            scrollerItem.innerHTML = `
+                <img src="${skin.image}" alt="${skin.name}">
+                <span class="skin-name">${skin.name}</span>
+                <span class="skin-price">$${skin.price.toFixed(2)}</span>
+            `;
+            recentDropsScroller.prepend(scrollerItem); // Add to the beginning
+
+            // Keep the scroller from getting too long (optional, remove if infinite scroll is desired)
+            if (recentDropsScroller.children.length > 20) {
+                recentDropsScroller.removeChild(recentDropsScroller.lastChild); // Remove from the end
+            }
+            // Adjust scroll position to keep the view consistent when prepending
+            // This is a simple approach; more complex logic might be needed for smooth animation
+            recentDropsScroller.scrollLeft = 0; // Scroll to the left to show new items
+        }
+    };
+
+    // Populate initial scroller items
+    for (let i = 0; i < 20; i++) { // Increased initial preload count
+        addRandomExpensiveSkin();
+    }
+
+    // Continuously add new skins every few seconds
+    setInterval(addRandomExpensiveSkin, 3000); // Add a new skin every 3 seconds
+
+
+    // Determine the maximum price from caseData for slider max value
+    const maxCasePrice = Math.max(...caseData.map(c => c.price));
+    if (minPriceSlider && maxPriceSlider) {
+        minPriceSlider.max = maxCasePrice.toFixed(2);
+        maxPriceSlider.max = maxCasePrice.toFixed(2);
+        maxPriceSlider.value = maxCasePrice.toFixed(2); // Set initial max value
+    }
+
+    // Function to update slider display values
+    const updateSliderDisplay = () => {
+        if (currentMinPriceSpan && minPriceSlider) {
+            currentMinPriceSpan.textContent = parseFloat(minPriceSlider.value).toFixed(2);
+        }
+        if (currentMaxPriceSpan && maxPriceSlider) {
+            currentMaxPriceSpan.textContent = parseFloat(maxPriceSlider.value).toFixed(2);
+        }
+    };
 
     // Function to render cases
     const renderCases = (casesToRender) => {
         if (casesGrid) {
             casesGrid.innerHTML = ''; // Clear existing cases
+            if (casesToRender.length === 0) {
+                casesGrid.innerHTML = '<p style="text-align: center; width: 100%; color: #aaa;">No cases found matching your criteria.</p>';
+                return;
+            }
             casesToRender.forEach(caseObj => {
                 casesGrid.insertAdjacentHTML('beforeend', generateCaseCard(caseObj));
             });
         }
     };
 
-    // Initial render of all cases
-    renderCases(caseData);
+    // Function to apply all filters
+    const applyFilters = () => {
+        let filteredCases = [...caseData];
 
-    // Event listener for search input
-    if (caseSearchInput) {
-        caseSearchInput.addEventListener('input', (event) => {
-            const searchTerm = event.target.value.toLowerCase();
-            const filteredCases = caseData.filter(caseObj =>
+        // Apply search filter
+        const searchTerm = caseSearchInput ? caseSearchInput.value.toLowerCase() : '';
+        if (searchTerm) {
+            filteredCases = filteredCases.filter(caseObj =>
                 caseObj.name.toLowerCase().includes(searchTerm)
             );
-            renderCases(filteredCases);
+        }
+
+        // Apply price range filter
+        const minPrice = minPriceSlider ? parseFloat(minPriceSlider.value) : 0;
+        const maxPrice = maxPriceSlider ? parseFloat(maxPriceSlider.value) : maxCasePrice;
+
+        filteredCases = filteredCases.filter(caseObj =>
+            caseObj.price >= minPrice && caseObj.price <= maxPrice
+        );
+
+        // Apply volatility filter
+        if (volatilitySlider) {
+            const sliderValue = parseFloat(volatilitySlider.value);
+            if (sliderValue >= 40 && sliderValue <= 60) {
+                // Show all cases (no volatility filter applied)
+            } else if (sliderValue < 40) {
+                filteredCases = filteredCases.filter(caseObj => caseObj.volatility === "Low");
+            } else { // sliderValue > 60
+                filteredCases = filteredCases.filter(caseObj => caseObj.volatility === "High");
+            }
+        }
+
+        renderCases(filteredCases);
+        updateSliderDisplay(); // Update display after filtering
+    };
+
+    // Initial render and display update
+    applyFilters();
+    updateSliderDisplay();
+
+    // Event listeners for filters
+    if (caseSearchInput) {
+        caseSearchInput.addEventListener('input', applyFilters);
+    }
+
+    if (minPriceSlider) {
+        minPriceSlider.addEventListener('input', () => {
+            if (parseFloat(minPriceSlider.value) > parseFloat(maxPriceSlider.value)) {
+                minPriceSlider.value = maxPriceSlider.value;
+            }
+            applyFilters();
         });
+    }
+
+    if (maxPriceSlider) {
+        maxPriceSlider.addEventListener('input', () => {
+            if (parseFloat(maxPriceSlider.value) < parseFloat(minPriceSlider.value)) {
+                maxPriceSlider.value = minPriceSlider.value;
+            }
+            applyFilters();
+        });
+    }
+
+    if (volatilitySlider) {
+        volatilitySlider.addEventListener('input', applyFilters);
     }
 
     // Event listener for opening a specific case

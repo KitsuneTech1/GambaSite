@@ -8,6 +8,8 @@ function updateBalanceDisplay() {
     document.querySelector('.balance .gem-icon').style.display = useGems ? 'inline-block' : 'none';
 }
 
+import { caseData } from './cases-script.js';
+
 function getCaseById(caseId) {
     return caseData.find(c => c.id === caseId);
 }
