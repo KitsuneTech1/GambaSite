@@ -203,7 +203,7 @@ export const caseData = [
     }
 ];
 
-function calculateRTP(caseObj) {
+export function calculateRTP(caseObj) {
     let expectedValue = 0;
     caseObj.drops.forEach(drop => {
         expectedValue += drop.odds * drop.value;

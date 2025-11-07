@@ -374,6 +374,48 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Function to decode JWT token and extract SteamID
+    function getDecodedSteamID() {
+        const token = localStorage.getItem("auth_token");
+        if (!token) return null;
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            return payload.steamid;
+        } catch (err) {
+            console.error("Failed to decode JWT:", err);
+            return null;
+        }
+    }
+
+    // Function to check admin access and render form
+    async function checkAdminAccess() {
+        const authorizedSteamID = "76561199163202169"; // your admin SteamID
+        const loggedInSteamID = getDecodedSteamID();
+        const adminContent = document.getElementById("admin-content");
+
+        if (!adminContent) {
+            console.warn("Admin content placeholder not found.");
+            return;
+        }
+
+        if (!loggedInSteamID) {
+            adminContent.innerHTML =
+                "<p>Please log in with Steam to access the admin panel.</p>";
+            return;
+        }
+
+        if (loggedInSteamID === authorizedSteamID) {
+            renderAdminForm(loggedInSteamID);
+        } else {
+            adminContent.innerHTML =
+                "<p>Access Denied: Your SteamID does not have administrative privileges.</p>";
+        }
+    }
+
+    // Expose checkAdminAccess globally if needed by other scripts (e.g., admin.html)
+    window.checkAdminAccess = checkAdminAccess;
+    window.getDecodedSteamID = getDecodedSteamID; // Also expose getDecodedSteamID
+
     // Load the header and sidebar first, then initialize chat and auth
     Promise.all([loadHeader(), loadSidebar()]).then(() => {
         // Now that header is loaded, query addFundsBtn
@@ -390,5 +432,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         initializeChatAndOnlinePlayers(); // This is where chat is initialized
         handleAuth(); // Call handleAuth after header and sidebar are loaded
+
+        // After auth is handled, check admin access if on the admin page
+        if (window.location.pathname.includes("admin.html")) {
+            checkAdminAccess();
+        }
     });
 });
