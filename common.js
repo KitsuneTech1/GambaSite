@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const userData = await response.json();
-            updateUI(userData.username, localStorage.getItem("userAvatar"), userData.steam_id);
+            updateUI(userData.username, decodedToken.avatar, userData.steam_id);
         } catch (error) {
             console.error("Error fetching user details:", error);
             updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid); // Fallback to stored data
