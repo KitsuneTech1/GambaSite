@@ -26,8 +26,16 @@ async function authenticatedFetch(url, options = {}) {
     });
 
     if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || `API Error: ${response.statusText}`);
+        let errorDetail = `API Error: ${response.statusText}`;
+        try {
+            const errorData = await response.json();
+            errorDetail = errorData.detail || JSON.stringify(errorData);
+        } catch (parseError) {
+            // If response is not JSON, use status text
+            console.error("Error parsing API error response:", parseError);
+        }
+        console.error(`API request to ${url} failed with status ${response.status}:`, errorDetail);
+        throw new Error(errorDetail);
     }
 
     return response.json();
