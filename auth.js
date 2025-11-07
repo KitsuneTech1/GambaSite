@@ -1,48 +1,38 @@
-// token check on load
 const params = new URLSearchParams(window.location.search);
-const token = params.get("token");
+const token = params.get('token');
+
 if (token) {
-  localStorage.setItem("auth_token", token);
+  localStorage.setItem('auth_token', token);
   window.history.replaceState({}, document.title, "/");
 }
 
-const authToken = localStorage.getItem("auth_token");
-const loginButton = document.getElementById("login-btn");
-const logoutButton = document.getElementById("logout-btn");
-const headerRight = document.querySelector(".header-right");
+const storedToken = localStorage.getItem('auth_token');
+if (storedToken) {
+  try {
+    const payload = JSON.parse(atob(storedToken.split('.')[1]));
+    const avatarUrl = payload.avatar;
 
-if (authToken) {
-  const payload = JSON.parse(atob(authToken.split(".")[1]));
-  document.body.classList.add("logged-in");
-  
-  if (loginButton) {
-    loginButton.style.display = "none";
-  }
-  if (logoutButton) {
-    logoutButton.style.display = "block";
-  }
+    let avatarImg = document.getElementById('steam-avatar');
+    if (!avatarImg) {
+      avatarImg = document.createElement('img');
+      avatarImg.id = 'steam-avatar';
+      avatarImg.style.position = 'absolute';
+      avatarImg.style.top = '10px';
+      avatarImg.style.right = '10px';
+      avatarImg.style.width = '40px';
+      avatarImg.style.height = '40px';
+      avatarImg.style.borderRadius = '50%';
+      avatarImg.style.cursor = 'pointer';
+      document.body.appendChild(avatarImg);
+    }
+    avatarImg.src = avatarUrl;
 
-  const userInfoDiv = document.createElement("div");
-  userInfoDiv.classList.add("user-info");
-  userInfoDiv.innerHTML = `
-    <img src="${payload.avatar}" class="avatar" />
-    <span class="username">${payload.displayName}</span>
-  `;
-  if (headerRight) {
-    headerRight.insertBefore(userInfoDiv, logoutButton);
+    avatarImg.onclick = () => {
+      localStorage.removeItem('auth_token');
+      window.location.reload();
+    };
+  } catch (err) {
+    console.error('Invalid token:', err);
+    localStorage.removeItem('auth_token');
   }
-
-} else {
-  document.body.classList.remove("logged-in");
-  if (loginButton) {
-    loginButton.style.display = "block";
-  }
-  if (logoutButton) {
-    logoutButton.style.display = "none";
-  }
-}
-
-function logout() {
-  localStorage.removeItem("auth_token");
-  window.location.reload();
 }
