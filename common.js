@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const userData = await response.json();
             const storedToken = localStorage.getItem("jwtToken");
             const decodedToken = parseJwt(storedToken);
-            updateUI(userData.username, decodedToken.avatar, userData.steam_id);
+            updateUI(decodedToken.personaname, decodedToken.avatar, userData.steam_id);
         } catch (error) {
             console.error("Error fetching user details:", error);
             updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid); // Fallback to stored data
@@ -291,7 +291,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function initializeWebSocket(steam_id) {
         const socket = new WebSocket(`wss://api.tryharderapi.lol/ws/balance/${steam_id}`);
 
+        socket.onopen = () => {
+            console.log("Connected to WebSocket");
+        };
+
         socket.onmessage = (event) => {
+            console.log("Message from server:", event.data);
             const data = JSON.parse(event.data);
             if (data.COIN !== undefined) {
                 document.getElementById("coin-balance").textContent = data.COIN.toFixed(2);
@@ -301,8 +306,13 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-        socket.onclose = () => console.log("Disconnected from balance updates");
-        socket.onerror = (err) => console.error("WebSocket error", err);
+        socket.onerror = (error) => {
+            console.log("WebSocket Error:", error);
+        };
+
+        socket.onclose = () => {
+            console.log("Disconnected from WebSocket");
+        };
     }
 
     // Logout function (made global for onclick in header.html)

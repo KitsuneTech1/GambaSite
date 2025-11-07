@@ -27,40 +27,37 @@
             checkAdminAccess();
         });
 
-        async function checkAdminAccess() {
-            const steamID = localStorage.getItem("auth_token");
-            const authorizedSteamID = "76561199163202169";
-
-            if (!steamID) {
-                document.getElementById("admin-content").innerHTML = "<p>Please log in with Steam to access the admin panel.</p>";
-                return;
-            }
-
-            // In a real application, you would likely decode the steam_auth_token to get the SteamID
-            // For this example, we'll assume the cookie *is* the SteamID or can be easily parsed.
-            // If the cookie is a JWT or similar, you'd need a library to decode it on the client-side
-            // or a server-side endpoint to validate and return the SteamID.
-
-            // For now, let's simulate getting the SteamID from the cookie.
-            // This is a placeholder and needs to be replaced with actual logic to extract SteamID from your auth token.
-            let loggedInSteamID = null;
-            if (steamID) {
-                try {
-                    const payload = JSON.parse(atob(steamID.split(".")[1]));
-                    loggedInSteamID = payload.steamid;
-                } catch (e) {
-                    console.error("Error decoding auth token:", e);
-                }
-            }
-
-            if (loggedInSteamID === authorizedSteamID) {
-                renderAdminForm();
-            } else {
-                document.getElementById("admin-content").innerHTML = "<p>Access Denied: Your SteamID does not have administrative privileges.</p>";
+        function getDecodedSteamID() {
+            const token = localStorage.getItem("auth_token");
+            if (!token) return null;
+            try {
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                return payload.steamid;
+            } catch (err) {
+                console.error("Failed to decode JWT:", err);
+                return null;
             }
         }
 
-        function renderAdminForm() {
+        async function checkAdminAccess() {
+            const authorizedSteamID = "76561199163202169"; // your admin SteamID
+            const loggedInSteamID = getDecodedSteamID();
+
+            if (!loggedInSteamID) {
+                document.getElementById("admin-content").innerHTML =
+                    "<p>Please log in with Steam to access the admin panel.</p>";
+                return;
+            }
+
+            if (loggedInSteamID === authorizedSteamID) {
+                renderAdminForm(loggedInSteamID);
+            } else {
+                document.getElementById("admin-content").innerHTML =
+                    "<p>Access Denied: Your SteamID does not have administrative privileges.</p>";
+            }
+        }
+
+        function renderAdminForm(adminSteamID) {
             const adminContent = document.getElementById("admin-content");
             adminContent.innerHTML = `
                 <h2>Add Balance</h2>
@@ -85,26 +82,17 @@
                 <div id="response-message"></div>
             `;
 
-            document.getElementById("add-balance-form").addEventListener("submit", handleAddBalanceSubmit);
+            document.getElementById("add-balance-form").addEventListener("submit", (e) =>
+                handleAddBalanceSubmit(e, adminSteamID)
+            );
         }
 
-        async function handleAddBalanceSubmit(event) {
+        async function handleAddBalanceSubmit(event, adminSteamID) {
             event.preventDefault();
 
-            let adminSteamID = null;
-            const authToken = localStorage.getItem("auth_token");
-            if (authToken) {
-                try {
-                    const payload = JSON.parse(atob(authToken.split(".")[1]));
-                    adminSteamID = payload.steamid;
-                } catch (e) {
-                    console.error("Error decoding auth token:", e);
-                }
-            }
             const targetSteamID = document.getElementById("targetSteamID").value;
             const currencyCode = document.getElementById("currency").value;
             const amount = parseInt(document.getElementById("amount").value);
-
             const responseMessageDiv = document.getElementById("response-message");
             responseMessageDiv.innerHTML = "<p>Sending request...</p>";
 
@@ -113,10 +101,10 @@
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${adminSteamID}` // Assuming the token is a bearer token
+                        "Authorization": `Bearer ${localStorage.getItem("auth_token")}`
                     },
                     body: JSON.stringify({
-                        admin_steam_id: adminSteamID, // This should ideally come from a decoded token
+                        admin_steam_id: adminSteamID,
                         target_steam_id: targetSteamID,
                         currency_code: currencyCode,
                         amount: amount
@@ -124,7 +112,6 @@
                 });
 
                 const result = await response.json();
-
                 if (response.ok) {
                     responseMessageDiv.innerHTML = `<p class="success">Success: ${result.message || "Balance added successfully."}</p>`;
                 } else {
@@ -134,14 +121,6 @@
                 console.error("Error adding balance:", error);
                 responseMessageDiv.innerHTML = `<p class="error">An unexpected error occurred: ${error.message}</p>`;
             }
-        }
-
-        // Helper function to get cookie value (from common.js or auth.js if it exists there)
-        function getCookie(name) {
-            const value = `; ${document.cookie}`;
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop().split(";").shift();
-            return null;
         }
     </script>
 </body>
