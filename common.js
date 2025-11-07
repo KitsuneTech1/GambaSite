@@ -126,6 +126,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    function parseJwt(token) {
+        try {
+            return JSON.parse(atob(token.split(".")[1]));
+        } catch (e) {
+            return null;
+        }
+    }
+
     function handleAuth() {
         console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
@@ -138,11 +146,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (token) {
             const decodedToken = parseJwt(token);
-            if (decodedToken && decodedToken.displayName && decodedToken.avatar) {
+            if (decodedToken && decodedToken.displayName && decodedToken.avatar && decodedToken.steamid) {
                 localStorage.setItem("jwtToken", token);
                 localStorage.setItem("userDisplayName", decodedToken.displayName);
                 localStorage.setItem("userAvatar", decodedToken.avatar);
-                updateUI(decodedToken.displayName, decodedToken.avatar);
+                localStorage.setItem("steamid", decodedToken.steamid);
+                updateUI(decodedToken.displayName, decodedToken.avatar, decodedToken.steamid);
                 // Clean the URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else {
@@ -151,21 +160,24 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else {
             const storedToken = localStorage.getItem("jwtToken");
-            if (storedToken) {
+            const storedSteamID = localStorage.getItem("steamid");
+            if (storedToken && storedSteamID) {
                 const decodedToken = parseJwt(storedToken);
-                if (decodedToken && decodedToken.displayName && decodedToken.avatar) {
-                    updateUI(decodedToken.displayName, decodedToken.avatar);
+                if (decodedToken && decodedToken.displayName && decodedToken.avatar && decodedToken.steamid) {
+                    updateUI(decodedToken.displayName, decodedToken.avatar, decodedToken.steamid);
                 } else {
                     console.error("Stored token is invalid or incomplete.");
                     clearAuthData();
                     showLoginButton();
                 }
+            } else {
+                showLoginButton();
             }
         }
     }
 
-    function updateUI(displayName, avatarUrl) {
-        console.log("Updating UI with user info:", displayName, avatarUrl);
+    function updateUI(displayName, avatarUrl, steamid) {
+        console.log("Updating UI with user info:", displayName, avatarUrl, steamid);
         const headerRight = document.querySelector(".header-right");
         if (!headerRight) return;
 
@@ -183,6 +195,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="username">${displayName}</span>
         `;
         headerRight.appendChild(userInfoDiv);
+
+        // Show admin panel link if authorized
+        const authorizedSteamID = "76561199163202169";
+        const adminPanelLink = document.getElementById("admin-panel-link");
+        if (adminPanelLink && steamid === authorizedSteamID) {
+            adminPanelLink.style.display = "block";
+        }
     }
 
     function showLoginButton() {
@@ -205,6 +224,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (userInfoDiv) {
             userInfoDiv.remove();
         }
+
+        // Hide admin panel link if not logged in or not authorized
+        const adminPanelLink = document.getElementById("admin-panel-link");
+        if (adminPanelLink) {
+            adminPanelLink.style.display = "none";
+        }
     }
 
     function clearAuthData() {
@@ -212,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.removeItem("jwtToken");
         localStorage.removeItem("userDisplayName");
         localStorage.removeItem("userAvatar");
+        localStorage.removeItem("steamid");
     }
 
     // Dynamic Background Functionality (kept here as it\"s body-wide)
@@ -281,6 +307,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         initializeChatAndOnlinePlayers(); // This is where chat is initialized
+        handleAuth(); // Call handleAuth after header and sidebar are loaded
     });
 });
 

@@ -1894,6 +1894,102 @@ input:checked + .slider:before {
     color: #ffcc00;
 }
 
+/* Admin Panel Styles */
+.admin-container {
+    padding: 40px 20px;
+    max-width: 700px;
+    margin: 20px auto;
+    background-color: #1c1c1c;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+    border: 1px solid #333;
+    color: #e0e0e0;
+}
+
+.admin-container h1 {
+    font-size: 2.5em;
+    color: #ff00ff;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+}
+
+.admin-container h2 {
+    font-size: 1.8em;
+    color: #8a2be2;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #3a3a3a;
+    padding-bottom: 5px;
+}
+
+.admin-container p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+}
+
+.admin-container .form-group {
+    margin-bottom: 20px;
+}
+
+.admin-container label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+.admin-container input[type="text"],
+.admin-container input[type="number"],
+.admin-container select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #444;
+    border-radius: 8px;
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    font-size: 1em;
+    box-sizing: border-box;
+}
+
+.admin-container input[type="text"]:focus,
+.admin-container input[type="number"]:focus,
+.admin-container select:focus {
+    outline: none;
+    border-color: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+}
+
+.admin-container .btn {
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4);
+    width: auto;
+}
+
+.admin-container .btn:hover {
+    background-color: #7b1fa2;
+    transform: translateY(-3px);
+}
+
+.admin-container .success {
+    color: #4CAF50;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.admin-container .error {
+    color: #d32f2f;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
 /* Footer Styles */
 footer {
     background-color: #1c1c1c;
