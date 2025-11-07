@@ -541,6 +541,25 @@ body {
 
 .username {
     font-weight: bold;
+    margin-left: 8px;
+}
+
+#logout-btn {
+    background-color: #d32f2f; /* Red color for logout */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-left: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(211, 47, 47, 0.4);
+}
+
+#logout-btn:hover {
+    background-color: #e57373;
+    transform: translateY(-3px);
 }
 
 .chat-input-container button:hover {

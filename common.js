@@ -125,15 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(updateOnlinePlayers, 10000); // Update every 10 seconds
     }
 
-    // JWT Authentication Logic (moved from script.js)
-    function parseJwt(token) {
-        try {
-            return jwt_decode(token);
-        } catch (e) {
-            console.error("Error decoding JWT:", e);
-            return null;
-        }
-    }
 
     function handleAuth() {
         console.log("Handling authentication...");
@@ -289,6 +280,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         initializeChatAndOnlinePlayers(); // This is where chat is initialized
-        handleAuth(); // This is where auth is initialized
     });
 });
+
+// Load auth.js after common.js to ensure header elements are present
+const authScript = document.createElement("script");
+authScript.src = "auth.js";
+document.head.appendChild(authScript);
