@@ -1,12 +1,4 @@
-let currentBalanceCoins = 1000;
-let currentBalanceGems = 0;
-let useGems = false; // false for coins, true for gems
 
-function updateBalanceDisplay() {
-    document.querySelector('.balance .balance-amount').textContent = useGems ? currentBalanceGems.toFixed(0) : currentBalanceCoins.toFixed(2);
-    document.querySelector('.balance .coin-icon').style.display = useGems ? 'none' : 'inline-block';
-    document.querySelector('.balance .gem-icon').style.display = useGems ? 'inline-block' : 'none';
-}
 
 import { caseData } from './cases-script.js';
 
@@ -75,136 +67,100 @@ function populateReel(caseObj, winningItem = null) {
     });
 }
 
-function startSpin(caseObj) {
-    if (useGems && currentBalanceGems < caseObj.price) {
-        alert('Not enough gems!');
+const API_BASE = "https://api.tryharderapi.lol";
+
+async function startSpin(caseObj) {
+    const steamid = localStorage.getItem("steamid");
+    if (!steamid) {
+        alert("Please log in to open cases.");
         return;
     }
-    if (!useGems && currentBalanceCoins < caseObj.price) {
-        alert('Not enough coins!');
-        return;
-    }
 
-    if (useGems) {
-        currentBalanceGems -= caseObj.price;
-    } else {
-        currentBalanceCoins -= caseObj.price;
-    }
-    updateBalanceDisplay();
+    try {
+        const response = await fetch(`${API_BASE}/crate/open`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`
+            },
+            body: JSON.stringify({
+                caseId: caseObj.id,
+                steamid: steamid
+            })
+        });
 
-    // Determine the winning item based on odds
-    const randomValue = Math.random();
-    let cumulativeOdds = 0;
-    let winningDrop = null;
-    for (const drop of caseObj.drops) {
-        cumulativeOdds += drop.odds;
-        if (randomValue <= cumulativeOdds) {
-            winningDrop = drop;
-            break;
+        if (!response.ok) {
+            const errorData = await response.json();
+            alert(`Error opening case: ${errorData.message || response.statusText}`);
+            return;
         }
-    }
-    if (!winningDrop) { // Fallback if no item is selected (shouldn't happen with correct odds)
-        winningDrop = caseObj.drops[caseObj.drops.length - 1];
-    }
 
-    // Now select a specific wear for the winning item based on its wear odds
-    let winningItemWithWear = { ...winningDrop };
-    if (winningDrop.wears && winningDrop.wears.length > 0) {
-        const randomWearValue = Math.random();
-        let cumulativeWearOdds = 0;
-        let selectedWear = null;
-        for (const wear of winningDrop.wears) {
-            cumulativeWearOdds += wear.odds;
-            if (randomWearValue <= cumulativeWearOdds) {
-                selectedWear = wear;
-                break;
-            }
-        }
-        if (!selectedWear) {
-            selectedWear = winningDrop.wears[winningDrop.wears.length - 1];
-        }
-        winningItemWithWear.wear = selectedWear.condition;
-        winningItemWithWear.price = selectedWear.value;
-    } else if (winningDrop.value) {
-        winningItemWithWear.price = winningDrop.value;
-    }
+        const result = await response.json();
+        const winningItemWithWear = result.unboxedItem;
 
+        populateReel(caseObj, winningItemWithWear); // Re-populate reel with winning item at the fixed landing spot
 
-    populateReel(caseObj, winningItemWithWear); // Re-populate reel with winning item at the fixed landing spot
+        // Calculate scroll position to center the winning item at the landing spot
+        const containerWidth = unboxingReel.parentElement.offsetWidth;
+        const targetScroll = (landingSpotIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+        const maxScroll = unboxingReel.scrollWidth - containerWidth;
+        const scrollPosition = Math.max(0, Math.min(targetScroll, maxScroll));
 
-    // Calculate scroll position to center the winning item at the landing spot
-    const containerWidth = unboxingReel.parentElement.offsetWidth;
-    const targetScroll = (landingSpotIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
-    const maxScroll = unboxingReel.scrollWidth - containerWidth;
-    const scrollPosition = Math.max(0, Math.min(targetScroll, maxScroll));
+        unboxingReel.style.transition = "none"; // Remove transition for instant reset
+        unboxingReel.style.transform = `translateX(0)`; // Reset position
+        
+        // Force reflow to ensure the reset is applied before the new animation
+        unboxingReel.offsetWidth; 
 
-    unboxingReel.style.transition = 'none'; // Remove transition for instant reset
-    unboxingReel.style.transform = `translateX(0)`; // Reset position
-    
-    // Force reflow to ensure the reset is applied before the new animation
-    unboxingReel.offsetWidth; 
-
-    // Spin fast for 3 seconds, then slow down for 2 seconds (total 5s)
-    unboxingReel.style.transition = 'transform 3s linear'; // Fast spin for 3 seconds
-    unboxingReel.style.transform = `translateX(-${scrollPosition}px)`;
-
-    setTimeout(() => {
-        unboxingReel.style.transition = 'transform 2s cubic-bezier(0.1, 0.7, 0.5, 1)'; // Slow down for 2 seconds
-        unboxingReel.style.transform = `translateX(-${scrollPosition}px)`; // Ensure it stays at the target
+        // Spin fast for 3 seconds, then slow down for 2 seconds (total 5s)
+        unboxingReel.style.transition = "transform 3s linear"; // Fast spin for 3 seconds
+        unboxingReel.style.transform = `translateX(-${scrollPosition}px)`;
 
         setTimeout(() => {
-            const popupItemImage = document.getElementById('popupItemImage');
-            const popupItemName = document.getElementById('popupItemName');
-            const popupItemValue = document.getElementById('popupItemValue');
-            const unboxedItemPopup = document.getElementById('unboxedItemPopup');
+            unboxingReel.style.transition = "transform 2s cubic-bezier(0.1, 0.7, 0.5, 1)"; // Slow down for 2 seconds
+            unboxingReel.style.transform = `translateX(-${scrollPosition}px)`; // Ensure it stays at the target
 
-            popupItemImage.src = winningItemWithWear.image;
-            popupItemImage.alt = winningItemWithWear.name;
-            popupItemName.textContent = winningItemWithWear.name;
-            popupItemValue.textContent = `$${winningItemWithWear.price.toFixed(2)}`;
-
-            unboxedItemPopup.classList.add('show');
-
-            // Hide popup after a few seconds
             setTimeout(() => {
-                unboxedItemPopup.classList.remove('show');
-            }, 3000); // Popup visible for 3 seconds
+                const popupItemImage = document.getElementById("popupItemImage");
+                const popupItemName = document.getElementById("popupItemName");
+                const popupItemValue = document.getElementById("popupItemValue");
+                const unboxedItemPopup = document.getElementById("unboxedItemPopup");
 
-            // Update balance
-            if (useGems) {
-                currentBalanceGems += winningItemWithWear.price;
-            } else {
-                currentBalanceCoins += winningItemWithWear.price;
-            }
-            updateBalanceDisplay();
+                popupItemImage.src = winningItemWithWear.image;
+                popupItemImage.alt = winningItemWithWear.name;
+                popupItemName.textContent = winningItemWithWear.name;
+                popupItemValue.textContent = `$${winningItemWithWear.price.toFixed(2)}`;
 
-            // Add notification (simple console log for now, can be expanded)
-            console.log(`You unboxed: ${winningItemWithWear.name} worth $${winningItemWithWear.price.toFixed(2)}!`);
+                unboxedItemPopup.classList.add("show");
 
-        }, 1000); // After the slow down animation (1 second)
-    }, 3000); // After the fast spin animation (3 seconds)
+                // Hide popup after a few seconds
+                setTimeout(() => {
+                    unboxedItemPopup.classList.remove("show");
+                }, 3000); // Popup visible for 3 seconds
+
+                // Add notification (simple console log for now, can be expanded)
+                console.log(`You unboxed: ${winningItemWithWear.name} worth $${winningItemWithWear.price.toFixed(2)}!`);
+
+            }, 1000); // After the slow down animation (1 second)
+        }, 3000); // After the fast spin animation (3 seconds)
+
+    } catch (error) {
+        console.error("Error opening case:", error);
+        alert("An error occurred while opening the case. Please try again.");
+    }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    updateBalanceDisplay();
-
+document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const caseId = urlParams.get('caseId');
+    const caseId = urlParams.get("caseId");
     const selectedCase = getCaseById(caseId);
 
     if (selectedCase) {
         populateUnboxingPage(selectedCase);
         populateReel(selectedCase); // Populate reel with random items on page load
-        document.getElementById('openCaseButton').addEventListener('click', () => startSpin(selectedCase));
-        document.querySelector('.demo-spin-btn').addEventListener('click', () => startSpin(selectedCase)); // Demo spin uses same logic for now
+        document.getElementById("openCaseButton").addEventListener("click", () => startSpin(selectedCase));
+        document.querySelector(".demo-spin-btn").addEventListener("click", () => startSpin(selectedCase)); // Demo spin uses same logic for now
     } else {
-        document.querySelector('.unboxing-page').innerHTML = '<p>Case not found.</p>';
+        document.querySelector(".unboxing-page").innerHTML = "<p>Case not found.</p>";
     }
-
-    // Currency toggle functionality
-    const balanceElement = document.querySelector('.header-right .balance');
-    balanceElement.addEventListener('click', () => {
-        useGems = !useGems;
-        updateBalanceDisplay();
-    });
 });

@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function handleAuth() {
+    async function handleAuth() {
         console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
@@ -151,7 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("userDisplayName", decodedToken.displayName);
                 localStorage.setItem("userAvatar", decodedToken.avatar);
                 localStorage.setItem("steamid", decodedToken.steamid);
-                updateUI(decodedToken.displayName, decodedToken.avatar, decodedToken.steamid);
+                await fetchAndDisplayUserDetails(decodedToken.steamid);
+                initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
                 // Clean the URL
                 window.history.replaceState({}, document.title, window.location.pathname);
             } else {
@@ -164,7 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (storedToken && storedSteamID) {
                 const decodedToken = parseJwt(storedToken);
                 if (decodedToken && decodedToken.displayName && decodedToken.avatar && decodedToken.steamid) {
-                    updateUI(decodedToken.displayName, decodedToken.avatar, decodedToken.steamid);
+                    await fetchAndDisplayUserDetails(decodedToken.steamid);
+                    initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
                 } else {
                     console.error("Stored token is invalid or incomplete.");
                     clearAuthData();
@@ -174,6 +176,38 @@ document.addEventListener("DOMContentLoaded", () => {
                 showLoginButton();
             }
         }
+    }
+
+    async function fetchAndDisplayUserDetails(steamid) {
+        try {
+            const response = await fetch(`${API_BASE}/user/by_steam?steam_id=${steamid}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const userData = await response.json();
+            updateUI(userData.username, localStorage.getItem("userAvatar"), userData.steam_id);
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+            // Fallback to stored data if API call fails
+            updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid);
+        }
+    }
+
+    function initializeWebSocket(steam_id) {
+        const socket = new WebSocket(`wss://api.tryharderapi.lol/ws/balance/${steam_id}`);
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.COIN !== undefined) {
+                document.getElementById("coin-balance").textContent = data.COIN.toFixed(2);
+            }
+            if (data.GEM !== undefined) {
+                document.getElementById("gem-balance").textContent = data.GEM.toFixed(2);
+            }
+        };
+
+        socket.onclose = () => console.log("Disconnected from balance updates");
+        socket.onerror = (err) => console.error("WebSocket error", err);
     }
 
     function updateUI(displayName, avatarUrl, steamid) {
@@ -310,8 +344,3 @@ document.addEventListener("DOMContentLoaded", () => {
         handleAuth(); // Call handleAuth after header and sidebar are loaded
     });
 });
-
-// Load auth.js after common.js to ensure header elements are present
-const authScript = document.createElement("script");
-authScript.src = "auth.js";
-document.head.appendChild(authScript);
