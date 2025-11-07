@@ -150,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const authContainer = document.getElementById("auth-container");
         if (!authContainer) return;
 
-        const API_BASE = "https://api.tryharderapi.lol";
+        const API_BASE = "https://api.playkitsune.lol";
         let steamLoginButton = authContainer.querySelector(`a[href="${API_BASE}/auth/steam"]`);
         if (!steamLoginButton) {
             steamLoginButton = document.createElement("a");
