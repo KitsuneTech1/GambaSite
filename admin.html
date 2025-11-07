@@ -7,18 +7,19 @@
     <link rel="stylesheet" href="style.css">
     <script src="js/jwt-decode.min.js"></script>
     <script src="common.js"></script>
-    <script src="auth.js"></script>
 </head>
 <body>
-    <div id="header-placeholder"></div>
-    <div id="sidebar-placeholder"></div>
+    <div class="container">
+        <div id="header-placeholder"></div>
+        <div id="sidebar-placeholder"></div>
 
-    <main class="admin-container">
-        <h1>Admin Panel</h1>
-        <div id="admin-content">
-            <p>Verifying access...</p>
-        </div>
-    </main>
+        <main class="admin-container">
+            <h1>Admin Panel</h1>
+            <div id="admin-content">
+                <p>Verifying access...</p>
+            </div>
+        </main>
+    </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
