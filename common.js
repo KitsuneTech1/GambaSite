@@ -278,6 +278,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const userData = await response.json();
+            const storedToken = localStorage.getItem("jwtToken");
+            const decodedToken = parseJwt(storedToken);
             updateUI(userData.username, decodedToken.avatar, userData.steam_id);
         } catch (error) {
             console.error("Error fetching user details:", error);
