@@ -150,11 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const authContainer = document.getElementById("auth-container");
         if (!authContainer) return;
 
-        const API_BASE = "https://api.playkitsune.lol";
-        let steamLoginButton = authContainer.querySelector(`a[href="${API_BASE}/auth/steam"]`);
+        const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
+        let steamLoginButton = authContainer.querySelector(`a[href="${STEAM_AUTH_API_BASE}/auth/steam"]`);
         if (!steamLoginButton) {
             steamLoginButton = document.createElement("a");
-            steamLoginButton.href = `${API_BASE}/auth/steam`;
+            steamLoginButton.href = `${STEAM_AUTH_API_BASE}/auth/steam`;
             steamLoginButton.id = "login-btn";
             const img = document.createElement("img");
             img.src = "https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png";
@@ -183,8 +183,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const authContainer = document.getElementById("auth-container");
         if (!authContainer) return;
 
-        const API_BASE = "https://api.tryharderapi.lol";
-        const steamLoginButton = authContainer.querySelector(`a[href="${API_BASE}/auth/steam"]`);
+        const GENERAL_API_BASE = "https://api.tryharderapi.lol"; // Define GENERAL_API_BASE here
+        const steamLoginButton = authContainer.querySelector(`a[href="${STEAM_AUTH_API_BASE}/auth/steam"]`);
 
         if (steamLoginButton) {
             steamLoginButton.remove();
@@ -217,29 +217,43 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
-        const API_BASE = "https://api.tryharderapi.lol";
+        const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
+        const GENERAL_API_BASE = "https://api.tryharderapi.lol";
+
+        console.log("Token from URL:", token);
 
         if (token) {
             const decodedToken = parseJwt(token);
-            if (decodedToken && decodedToken.displayName && decodedToken.avatar && decodedToken.steamid) {
+            console.log("Decoded Token:", decodedToken);
+
+            if (decodedToken && decodedToken.personaName && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
+                console.log("Saving token and user data to localStorage...");
                 localStorage.setItem("jwtToken", token);
-                localStorage.setItem("userDisplayName", decodedToken.displayName);
+                localStorage.setItem("userDisplayName", decodedToken.personaName); // Changed displayName to personaName
                 localStorage.setItem("userAvatar", decodedToken.avatar);
                 localStorage.setItem("steamid", decodedToken.steamid);
+                console.log("localStorage updated.");
+
                 await fetchAndDisplayUserDetails(decodedToken.steamid);
                 initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
+                
+                console.log("Cleaning URL...");
                 window.history.replaceState({}, document.title, window.location.pathname); // Clean the URL
+                console.log("URL cleaned.");
             } else {
                 console.error("Invalid or incomplete JWT payload.");
                 clearAuthData(); // Clear invalid data
                 showLoginButton();
             }
         } else {
+            console.log("No token in URL. Checking localStorage...");
             const storedToken = localStorage.getItem("jwtToken");
             const storedSteamID = localStorage.getItem("steamid");
+            
             if (storedToken && storedSteamID) {
+                console.log("Stored token found. Attempting to use it.");
                 const decodedToken = parseJwt(storedToken);
-                if (decodedToken && decodedToken.displayName && decodedToken.avatar && decodedToken.steamid) {
+                if (decodedToken && decodedToken.personaName && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
                     await fetchAndDisplayUserDetails(decodedToken.steamid);
                     initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
                 } else {
@@ -248,6 +262,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     showLoginButton();
                 }
             } else {
+                console.log("No stored token found. Showing login button.");
                 showLoginButton();
             }
         }
@@ -255,9 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to fetch and display user details from API
     async function fetchAndDisplayUserDetails(steamid) {
-        const API_BASE = "https://api.tryharderapi.lol";
         try {
-            const response = await fetch(`${API_BASE}/user/by_steam?steam_id=${steamid}`);
+            const response = await fetch(`${GENERAL_API_BASE}/user/by_steam?steam_id=${steamid}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
