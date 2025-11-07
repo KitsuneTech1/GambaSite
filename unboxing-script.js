@@ -1,11 +1,5 @@
 
 
-import { caseData, rollCrate } from './cases-script.js';
-
-function getCaseById(caseId) {
-    return caseData.find(c => c.id === caseId);
-}
-
 import { caseData, rollCrate, calculateRTP } from './cases-script.js';
 
 function getCaseById(caseId) {

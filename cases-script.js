@@ -7,18 +7,18 @@ export const caseData = [
         price: 0.10,
         currency: "COIN",
         volatility: "Low",
-        image: "all_skins_in_game/P2000AmberFade.png", // Most valuable skin in this case
+        image: "/all_skins_in_game/P2000AmberFade.png", // Most valuable skin in this case
         drops: [
-            {"name": "P2000 | Amber Fade", "image": "all_skins_in_game/P2000AmberFade.png", "odds": 0.20, "value": 0.035},
-            {"name": "MP9 | Sand Scale", "image": "all_skins_in_game/MP9SandScale.png", "odds": 0.18, "value": 0.05},
-            {"name": "Nova | Sand Dune", "image": "all_skins_in_game/NovaSandDune.png", "odds": 0.15, "value": 0.07},
-            {"name": "G3SG1 | Desert Storm", "image": "all_skins_in_game/G3SG1DesertStorm.png", "odds": 0.12, "value": 0.085},
-            {"name": "UMP-45 | Scorched", "image": "all_skins_in_game/UMP-45Scorched.png", "odds": 0.10, "value": 0.10},
-            {"name": "Dual Berettas | Stained", "image": "all_skins_in_game/DualBerettasStained.png", "odds": 0.08, "value": 0.12},
-            {"name": "PP-Bizon | Sand Dashed", "image": "all_skins_in_game/PP-BizonSandDashed.png", "odds": 0.07, "value": 0.14},
-            {"name": "Sawed-Off | Sage Spray", "image": "all_skins_in_game/Sawed-OffSageSpray.png", "odds": 0.05, "value": 0.155},
-            {"name": "Negev | Army Sheen", "image": "all_skins_in_game/NegevArmySheen.png", "odds": 0.03, "value": 0.17},
-            {"name": "M249 | Gator Mesh", "image": "all_skins_in_game/M249GatorMesh.png", "odds": 0.02, "value": 0.26},
+            {"name": "P2000 | Amber Fade", "image": "/all_skins_in_game/P2000AmberFade.png", "odds": 0.20, "value": 0.035},
+            {"name": "MP9 | Sand Scale", "image": "/all_skins_in_game/MP9SandScale.png", "odds": 0.18, "value": 0.05},
+            {"name": "Nova | Sand Dune", "image": "/all_skins_in_game/NovaSandDune.png", "odds": 0.15, "value": 0.07},
+            {"name": "G3SG1 | Desert Storm", "image": "/all_skins_in_game/G3SG1DesertStorm.png", "odds": 0.12, "value": 0.085},
+            {"name": "UMP-45 | Scorched", "image": "/all_skins_in_game/UMP-45Scorched.png", "odds": 0.10, "value": 0.10},
+            {"name": "Dual Berettas | Stained", "image": "/all_skins_in_game/DualBerettasStained.png", "odds": 0.08, "value": 0.12},
+            {"name": "PP-Bizon | Sand Dashed", "image": "/all_skins_in_game/PP-BizonSandDashed.png", "odds": 0.07, "value": 0.14},
+            {"name": "Sawed-Off | Sage Spray", "image": "/all_skins_in_game/Sawed-OffSageSpray.png", "odds": 0.05, "value": 0.155},
+            {"name": "Negev | Army Sheen", "image": "/all_skins_in_game/NegevArmySheen.png", "odds": 0.03, "value": 0.17},
+            {"name": "M249 | Gator Mesh", "image": "/all_skins_in_game/M249GatorMesh.png", "odds": 0.02, "value": 0.26},
         ]
     },
     {

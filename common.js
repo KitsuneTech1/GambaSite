@@ -1,3 +1,7 @@
+const GENERAL_API_BASE = "https://api.tryharderapi.lol";
+const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
+const authorizedSteamID = "76561199163202169";
+
 document.addEventListener("DOMContentLoaded", () => {
     // Function to load header.html
     async function loadHeader() {
@@ -183,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const authContainer = document.getElementById("auth-container");
         if (!authContainer) return;
 
-        const GENERAL_API_BASE = "https://api.tryharderapi.lol"; // Define GENERAL_API_BASE here
         const steamLoginButton = authContainer.querySelector(`a[href="${STEAM_AUTH_API_BASE}/auth/steam"]`);
 
         if (steamLoginButton) {
@@ -217,8 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
-        const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
-        const GENERAL_API_BASE = "https://api.tryharderapi.lol";
+
 
         console.log("Token from URL:", token);
 
