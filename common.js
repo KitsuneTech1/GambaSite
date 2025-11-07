@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    // Function to parse JWT token
     function parseJwt(token) {
         try {
             return JSON.parse(atob(token.split(".")[1]));
@@ -134,15 +135,89 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Function to clear authentication data
+    function clearAuthData() {
+        console.log("Clearing authentication data.");
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("userDisplayName");
+        localStorage.removeItem("userAvatar");
+        localStorage.removeItem("steamid");
+    }
+
+    // Function to show the login button and hide user info
+    function showLoginButton() {
+        console.log("Showing login button.");
+        const authContainer = document.getElementById("auth-container");
+        if (!authContainer) return;
+
+        const API_BASE = "https://api.tryharderapi.lol";
+        let steamLoginButton = authContainer.querySelector(`a[href="${API_BASE}/auth/steam"]`);
+        if (!steamLoginButton) {
+            steamLoginButton = document.createElement("a");
+            steamLoginButton.href = `${API_BASE}/auth/steam`;
+            steamLoginButton.id = "login-btn";
+            const img = document.createElement("img");
+            img.src = "https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png";
+            img.alt = "Login with Steam";
+            steamLoginButton.appendChild(img);
+            authContainer.appendChild(steamLoginButton);
+        }
+        const userInfoDiv = authContainer.querySelector(".user-info");
+        if (userInfoDiv) {
+            userInfoDiv.remove();
+        }
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
+            logoutBtn.style.display = "none";
+        }
+
+        const adminPanelLink = document.getElementById("admin-panel-link");
+        if (adminPanelLink) {
+            adminPanelLink.style.display = "none";
+        }
+    }
+
+    // Function to update UI with user details
+    async function updateUI(displayName, avatarUrl, steamid) {
+        console.log("Updating UI with user info:", displayName, avatarUrl, steamid);
+        const authContainer = document.getElementById("auth-container");
+        if (!authContainer) return;
+
+        const API_BASE = "https://api.tryharderapi.lol";
+        const steamLoginButton = authContainer.querySelector(`a[href="${API_BASE}/auth/steam"]`);
+
+        if (steamLoginButton) {
+            steamLoginButton.remove();
+        }
+
+        let userInfoDiv = authContainer.querySelector(".user-info");
+        if (!userInfoDiv) {
+            userInfoDiv = document.createElement("div");
+            userInfoDiv.classList.add("user-info");
+            authContainer.appendChild(userInfoDiv);
+        }
+        userInfoDiv.innerHTML = `
+            <img src="${avatarUrl}" class="avatar" />
+            <span class="username">${displayName}</span>
+        `;
+
+        const logoutBtn = document.getElementById("logout-btn");
+        if (logoutBtn) {
+            logoutBtn.style.display = "block";
+        }
+
+        const adminPanelLink = document.getElementById("admin-panel-link");
+        if (adminPanelLink && steamid === authorizedSteamID) {
+            adminPanelLink.style.display = "block";
+        }
+    }
+
+    // Function to handle authentication flow
     async function handleAuth() {
         console.log("Handling authentication...");
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
-        const headerRight = document.querySelector(".header-right");
         const API_BASE = "https://api.tryharderapi.lol";
-        const steamLoginButton = headerRight ? headerRight.querySelector(`a[href="${API_BASE}/auth/steam"]`) : null;
-
-        if (!headerRight) { console.warn("Header right element not found for auth."); return; }
 
         if (token) {
             const decodedToken = parseJwt(token);
@@ -153,10 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("steamid", decodedToken.steamid);
                 await fetchAndDisplayUserDetails(decodedToken.steamid);
                 initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
-                // Clean the URL
-                window.history.replaceState({}, document.title, window.location.pathname);
+                window.history.replaceState({}, document.title, window.location.pathname); // Clean the URL
             } else {
                 console.error("Invalid or incomplete JWT payload.");
+                clearAuthData(); // Clear invalid data
                 showLoginButton();
             }
         } else {
@@ -178,7 +253,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Function to fetch and display user details from API
     async function fetchAndDisplayUserDetails(steamid) {
+        const API_BASE = "https://api.tryharderapi.lol";
         try {
             const response = await fetch(`${API_BASE}/user/by_steam?steam_id=${steamid}`);
             if (!response.ok) {
@@ -188,11 +265,11 @@ document.addEventListener("DOMContentLoaded", () => {
             updateUI(userData.username, localStorage.getItem("userAvatar"), userData.steam_id);
         } catch (error) {
             console.error("Error fetching user details:", error);
-            // Fallback to stored data if API call fails
-            updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid);
+            updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid); // Fallback to stored data
         }
     }
 
+    // Function to initialize WebSocket for balance updates
     function initializeWebSocket(steam_id) {
         const socket = new WebSocket(`wss://api.tryharderapi.lol/ws/balance/${steam_id}`);
 
@@ -210,69 +287,12 @@ document.addEventListener("DOMContentLoaded", () => {
         socket.onerror = (err) => console.error("WebSocket error", err);
     }
 
-    function updateUI(displayName, avatarUrl, steamid) {
-        console.log("Updating UI with user info:", displayName, avatarUrl, steamid);
-        const headerRight = document.querySelector(".header-right");
-        if (!headerRight) return;
-
-        const API_BASE = "https://api.tryharderapi.lol";
-        const steamLoginButton = headerRight.querySelector(`a[href="${API_BASE}/auth/steam"]`);
-
-        if (steamLoginButton) {
-            steamLoginButton.remove();
-        }
-
-        const userInfoDiv = document.createElement("div");
-        userInfoDiv.classList.add("user-info");
-        userInfoDiv.innerHTML = `
-            <img src="${avatarUrl}" class="avatar" />
-            <span class="username">${displayName}</span>
-        `;
-        headerRight.appendChild(userInfoDiv);
-
-        // Show admin panel link if authorized
-        const authorizedSteamID = "76561199163202169";
-        const adminPanelLink = document.getElementById("admin-panel-link");
-        if (adminPanelLink && steamid === authorizedSteamID) {
-            adminPanelLink.style.display = "block";
-        }
-    }
-
-    function showLoginButton() {
-        console.log("Showing login button.");
-        const headerRight = document.querySelector(".header-right");
-        if (!headerRight) return;
-
-        const API_BASE = "https://api.tryharderapi.lol";
-        let steamLoginButton = headerRight.querySelector(`a[href="${API_BASE}/auth/steam"]`);
-        if (!steamLoginButton) {
-            steamLoginButton = document.createElement("a");
-            steamLoginButton.href = `${API_BASE}/auth/steam`;
-            const img = document.createElement("img");
-            img.src = "https://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_noborder.png";
-            img.alt = "Login with Steam";
-            steamLoginButton.appendChild(img);
-            headerRight.appendChild(steamLoginButton);
-        }
-        const userInfoDiv = headerRight.querySelector(".user-info");
-        if (userInfoDiv) {
-            userInfoDiv.remove();
-        }
-
-        // Hide admin panel link if not logged in or not authorized
-        const adminPanelLink = document.getElementById("admin-panel-link");
-        if (adminPanelLink) {
-            adminPanelLink.style.display = "none";
-        }
-    }
-
-    function clearAuthData() {
-        console.log("Clearing authentication data.");
-        localStorage.removeItem("jwtToken");
-        localStorage.removeItem("userDisplayName");
-        localStorage.removeItem("userAvatar");
-        localStorage.removeItem("steamid");
-    }
+    // Logout function (made global for onclick in header.html)
+    window.logout = () => {
+        clearAuthData();
+        showLoginButton();
+        window.location.reload();
+    };
 
     // Dynamic Background Functionality (kept here as it\"s body-wide)
     const body = document.body;

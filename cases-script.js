@@ -1,3 +1,5 @@
+const API_BASE = "https://api.tryharderapi.lol";
+
 export const caseData = [
     {
         id: "high-stakes",
@@ -240,6 +242,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Determine the maximum price from caseData for slider max value
+    let allCases = [];
+
+    async function fetchCases() {
+        try {
+            const response = await fetch(`${API_BASE}/crate/list`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            allCases = await response.json();
+            applyFilters(); // Render cases after fetching
+        } catch (error) {
+            console.error("Error fetching cases:", error);
+            // Fallback to local caseData if API fails
+            allCases = [...caseData];
+            applyFilters();
+        }
+    }
+
+    // Determine the maximum price from caseData for slider max value
     const maxCasePrice = Math.max(...caseData.map(c => c.price));
     if (minPriceSlider && maxPriceSlider) {
         minPriceSlider.max = maxCasePrice.toFixed(2);
@@ -260,23 +281,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to render cases
     const renderCases = (casesToRender) => {
         if (casesGrid) {
-            casesGrid.innerHTML = ''; // Clear existing cases
+            casesGrid.innerHTML = ""; // Clear existing cases
             if (casesToRender.length === 0) {
-                casesGrid.innerHTML = '<p style="text-align: center; width: 100%; color: #aaa;">No cases found matching your criteria.</p>';
+                casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">No cases found matching your criteria.</p>`;
                 return;
             }
             casesToRender.forEach(caseObj => {
-                casesGrid.insertAdjacentHTML('beforeend', generateCaseCard(caseObj));
+                casesGrid.insertAdjacentHTML("beforeend", generateCaseCard(caseObj));
             });
         }
     };
 
     // Function to apply all filters
     const applyFilters = () => {
-        let filteredCases = [...caseData];
+        let filteredCases = [...allCases]; // Use allCases instead of caseData
 
         // Apply search filter
-        const searchTerm = caseSearchInput ? caseSearchInput.value.toLowerCase() : '';
+        const searchTerm = caseSearchInput ? caseSearchInput.value.toLowerCase() : "";
         if (searchTerm) {
             filteredCases = filteredCases.filter(caseObj =>
                 caseObj.name.toLowerCase().includes(searchTerm)
@@ -308,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Initial render and display update
-    applyFilters();
+    fetchCases(); // Fetch cases on load
     updateSliderDisplay();
 
     // Event listeners for filters
