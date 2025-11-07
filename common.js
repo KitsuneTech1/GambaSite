@@ -226,10 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const decodedToken = parseJwt(token);
             console.log("Decoded Token:", decodedToken);
 
-            if (decodedToken && decodedToken.personaName && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
+            if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
                 console.log("Saving token and user data to localStorage...");
                 localStorage.setItem("jwtToken", token);
-                localStorage.setItem("userDisplayName", decodedToken.personaName); // Changed displayName to personaName
+                localStorage.setItem("userDisplayName", decodedToken.personaname); // Changed displayName to personaName
                 localStorage.setItem("userAvatar", decodedToken.avatar);
                 localStorage.setItem("steamid", decodedToken.steamid);
                 console.log("localStorage updated.");
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (storedToken && storedSteamID) {
                 console.log("Stored token found. Attempting to use it.");
                 const decodedToken = parseJwt(storedToken);
-                if (decodedToken && decodedToken.personaName && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
+                if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
                     await fetchAndDisplayUserDetails(decodedToken.steamid);
                     initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
                 } else {
