@@ -298,11 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
         socket.onmessage = (event) => {
             console.log("Message from server:", event.data);
             const data = JSON.parse(event.data);
-            if (data.COIN !== undefined) {
-                document.getElementById("coin-balance").textContent = data.COIN.toFixed(2);
+            if (data.balances && data.balances.COIN !== undefined) {
+                document.getElementById("coin-balance").textContent = data.balances.COIN.toFixed(2);
             }
-            if (data.GEM !== undefined) {
-                document.getElementById("gem-balance").textContent = data.GEM.toFixed(2);
+            if (data.balances && data.balances.GEM !== undefined) {
+                document.getElementById("gem-balance").textContent = data.balances.GEM.toFixed(2);
             }
         };
 
