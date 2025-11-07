@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to clear authentication data
     function clearAuthData() {
         console.log("Clearing authentication data.");
-        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("auth_token");
         localStorage.removeItem("userDisplayName");
         localStorage.removeItem("userAvatar");
         localStorage.removeItem("steamid");
@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
                 console.log("Saving token and user data to localStorage...");
-                localStorage.setItem("jwtToken", token);
+                localStorage.setItem("auth_token", token);
                 localStorage.setItem("userDisplayName", decodedToken.personaname); // Changed displayName to personaName
                 localStorage.setItem("userAvatar", decodedToken.avatar);
                 localStorage.setItem("steamid", decodedToken.steamid);
@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } else {
             console.log("No token in URL. Checking localStorage...");
-            const storedToken = localStorage.getItem("jwtToken");
+            const storedToken = localStorage.getItem("auth_token");
             const storedSteamID = localStorage.getItem("steamid");
             
             if (storedToken && storedSteamID) {
@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const userData = await response.json();
-            const storedToken = localStorage.getItem("jwtToken");
+            const storedToken = localStorage.getItem("auth_token");
             const decodedToken = parseJwt(storedToken);
             updateUI(decodedToken.personaname, decodedToken.avatar, userData.steam_id);
         } catch (error) {
