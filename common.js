@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Generate random online player count
         function updateOnlinePlayers() {
-            const randomCount = Math.floor(Math.random() * (241 - 53 + 1)) + 53;
+            const randomCount = Math.floor(Math.random() * (70 - 60 + 1)) + 60;
             onlinePlayersCount.textContent = randomCount.toLocaleString();
         }
 

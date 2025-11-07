@@ -1,23 +1,28 @@
 
 
-import { caseData } from './cases-script.js';
+import { caseData, rollCrate } from './cases-script.js';
 
 function getCaseById(caseId) {
     return caseData.find(c => c.id === caseId);
 }
 
+import { caseData, rollCrate, calculateRTP } from './cases-script.js';
+
+function getCaseById(caseId) {
+    return caseData.find(c => c.id === caseId);
+}
 
 function populateUnboxingPage(caseObj) {
-    document.getElementById('caseImage').src = caseObj.image;
-    document.getElementById('caseName').textContent = caseObj.name;
-    document.getElementById('caseRTP').textContent = `90% RTP`; // Hardcode RTP for display as requested by the user
-    document.getElementById('openCasePrice').textContent = caseObj.price.toFixed(2);
+    document.getElementById("caseImage").src = caseObj.image;
+    document.getElementById("caseName").textContent = caseObj.name;
+    document.getElementById("caseRTP").textContent = `${calculateRTP(caseObj)}% RTP`; 
+    document.getElementById("openCasePrice").textContent = caseObj.price.toFixed(2);
 
-    const caseDropsList = document.getElementById('caseDropsList');
-    caseDropsList.innerHTML = ''; // Clear previous drops
+    const caseDropsList = document.getElementById("caseDropsList");
+    caseDropsList.innerHTML = ""; // Clear previous drops
 
     caseObj.drops.forEach(drop => {
-        const dropValue = drop.wears ? drop.wears[0].value : drop.value; // Assuming first wear value for display if wears exist
+        const dropValue = drop.value; 
         const dropItemHtml = `
             <div class="drop-item-sidebar rarity-${drop.rarity}">
                 <img src="${drop.image}" alt="${drop.name}">
@@ -26,7 +31,7 @@ function populateUnboxingPage(caseObj) {
                 <p class="drop-odds">${(drop.odds * 100).toFixed(2)}%</p>
             </div>
         `;
-        caseDropsList.insertAdjacentHTML('beforeend', dropItemHtml);
+        caseDropsList.insertAdjacentHTML("beforeend", dropItemHtml);
     });
 }
 
@@ -41,15 +46,11 @@ function populateReel(caseObj, winningItem = null) {
 
     // Populate the reel with random items
     for (let i = 0; i < itemsToPreload; i++) {
-        // Select a random drop and then a random wear for it
         const randomDrop = caseObj.drops[Math.floor(Math.random() * caseObj.drops.length)];
-        let displayItem = { ...randomDrop }; // Clone to avoid modifying original drop object
-
-        // Only include image and name for spinning items
         items.push({
-            name: displayItem.name,
-            image: displayItem.image,
-            rarity: displayItem.rarity
+            name: randomDrop.name,
+            image: randomDrop.image,
+            rarity: randomDrop.rarity
         });
     }
 
@@ -61,13 +62,10 @@ function populateReel(caseObj, winningItem = null) {
     items.forEach(item => {
         const itemElement = document.createElement('div');
         itemElement.classList.add('item', `rarity-${item.rarity}`);
-        // Only display image and name for spinning items
         itemElement.innerHTML = `<img src="${item.image}" alt="${item.name}"><p>${item.name}</p>`;
         unboxingReel.appendChild(itemElement);
     });
 }
-
-const API_BASE = "https://api.tryharderapi.lol";
 
 async function startSpin(caseObj) {
     const steamid = localStorage.getItem("steamid");
@@ -77,26 +75,13 @@ async function startSpin(caseObj) {
     }
 
     try {
-        const response = await fetch(`${API_BASE}/crate/open`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`
-            },
-            body: JSON.stringify({
-                caseId: caseObj.id,
-                steamid: steamid
-            })
-        });
+        // Use the local rollCrate function instead of fetching from API
+        const winningItemWithWear = rollCrate(caseObj.id);
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            alert(`Error opening case: ${errorData.message || response.statusText}`);
+        if (!winningItemWithWear) {
+            alert("Error: Could not determine winning item.");
             return;
         }
-
-        const result = await response.json();
-        const winningItemWithWear = result.unboxedItem;
 
         populateReel(caseObj, winningItemWithWear); // Re-populate reel with winning item at the fixed landing spot
 
