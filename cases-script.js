@@ -137,23 +137,29 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchCases() {
         try {
             const response = await apiGet("/crate/list");
-            caseData = response.crates; // Assuming the API returns an object with a 'crates' array
-            
-            // Update knife images
-            caseData.forEach(caseObj => {
-                caseObj.drops.forEach(drop => {
-                    if (knifeImageMap[drop.name]) {
-                        drop.image = `/scraped_images/${knifeImageMap[drop.name]}`;
-                    }
+            if (response && Array.isArray(response.crates)) {
+                caseData = response.crates;
+                
+                // Update knife images
+                caseData.forEach(caseObj => {
+                    caseObj.drops.forEach(drop => {
+                        if (knifeImageMap[drop.name]) {
+                            drop.image = `/scraped_images/${knifeImageMap[drop.name]}`;
+                        }
+                    });
                 });
-            });
 
-            allCases = [...caseData];
-            applyFilters(); // Render cases after fetching
+                allCases = [...caseData];
+                applyFilters(); // Render cases after fetching
+            } else {
+                console.error("API response for /crate/list did not contain an array of crates:", response);
+                casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases: Invalid data from server.</p>`;
+                caseData = []; // Ensure caseData is an empty array on error
+            }
         } catch (error) {
             console.error("Error fetching cases:", error);
-            // Handle error, maybe display a message to the user
             casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases. Please try again later.</p>`;
+            caseData = []; // Ensure caseData is an empty array on error
         }
     }
 
