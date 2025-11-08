@@ -71,7 +71,7 @@ function generateCaseCard(caseObj) {
     `;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Made the callback async
     const casesGrid = document.querySelector('.cases-grid');
     const caseSearchInput = document.getElementById('case-search-input');
     const minPriceSlider = document.getElementById('min-price-slider');
@@ -133,21 +133,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Determine the maximum price from caseData for slider max value
     let allCases = [];
+    let maxCasePrice = 0; // Initialize maxCasePrice here
 
     async function fetchCases() {
         try {
             const response = await apiGet("/crate/list");
+            console.log("API response for /crate/list:", response); // Log the response
             if (response && Array.isArray(response)) {
-                // Map 'chance' from backend to 'odds' for frontend compatibility
                 caseData = response.map(caseObj => ({
                     ...caseObj,
                     drops: caseObj.drops.map(drop => ({
                         ...drop,
-                        odds: drop.chance // Map 'chance' to 'odds'
+                        odds: drop.chance
                     }))
                 }));
                 
-                // Update knife images
                 caseData.forEach(caseObj => {
                     caseObj.drops.forEach(drop => {
                         if (knifeImageMap[drop.name]) {
@@ -157,30 +157,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 allCases = [...caseData];
-                applyFilters(); // Render cases after fetching
+                
+                // Calculate maxCasePrice after caseData is populated
+                if (caseData.length > 0) {
+                    maxCasePrice = Math.max(...caseData.map(c => c.price));
+                }
+
+                if (minPriceSlider && maxPriceSlider) {
+                    minPriceSlider.max = maxCasePrice.toFixed(2);
+                    maxPriceSlider.max = maxCasePrice.toFixed(2);
+                    maxPriceSlider.value = maxCasePrice.toFixed(2); // Set initial max value
+                }
+
+                applyFilters(); // Render cases after fetching and maxPrice is set
             } else {
                 console.error("API response for /crate/list did not contain an array:", response);
                 casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases: Invalid data from server.</p>`;
-                caseData = []; // Ensure caseData is an empty array on error
+                caseData = [];
             }
         } catch (error) {
             console.error("Error fetching cases:", error);
             casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases. Please try again later.</p>`;
-            caseData = []; // Ensure caseData is an empty array on error
+            caseData = [];
         }
-    }
-
-    // Determine the maximum price from caseData for slider max value
-    // This needs to be called after caseData is populated
-    let maxCasePrice = 0;
-    if (caseData.length > 0) {
-        maxCasePrice = Math.max(...caseData.map(c => c.price));
-    }
-    
-    if (minPriceSlider && maxPriceSlider) {
-        minPriceSlider.max = maxCasePrice.toFixed(2);
-        maxPriceSlider.max = maxCasePrice.toFixed(2);
-        maxPriceSlider.value = maxCasePrice.toFixed(2); // Set initial max value
     }
 
     // Function to update slider display values
@@ -244,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Initial render and display update
-    fetchCases(); // Fetch cases on load
+    await fetchCases(); // Await fetching cases
     updateSliderDisplay();
 
     // Event listeners for filters

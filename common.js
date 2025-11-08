@@ -68,6 +68,7 @@ async function loadCommonComponents() {
         const headerResponse = await fetch('header.html');
         const headerHtml = await headerResponse.text();
         document.getElementById('header-placeholder').innerHTML = headerHtml;
+        updateAuthContainer(); // Call after header is loaded
 
         const sidebarResponse = await fetch('sidebar.html');
         const sidebarHtml = await sidebarResponse.text();
@@ -78,8 +79,8 @@ async function loadCommonComponents() {
 }
 
 // Call loadCommonComponents when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    loadCommonComponents();
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadCommonComponents(); // Ensure header and sidebar are loaded first
     setupCurrencySwitch();
     applySavedTheme();
 });
@@ -140,5 +141,51 @@ function getCurrencyPreference() {
     return localStorage.getItem('theme') || 'coins'; // 'coins' or 'gems'
 }
 
+// Function to update the authentication container in the header
+function updateAuthContainer() {
+    const authContainer = document.getElementById('auth-container');
+    const logoutBtn = document.getElementById('logout-btn');
+    const token = localStorage.getItem('auth_token'); // Assuming 'auth_token' is used for login status
+
+    if (authContainer) {
+        if (token) {
+            // User is logged in, display avatar and name (placeholder for now)
+            const steamId = getDecodedSteamID(); // Reuse existing function
+            authContainer.innerHTML = `
+                <div class="user-info">
+                    <img src="https://avatars.akamai.steamstatic.com/8600000000000000000000000000000000000000_full.jpg" alt="User Avatar" class="avatar">
+                    <span class="username">Steam User ${steamId ? steamId.substring(0, 8) : ''}</span>
+                </div>
+            `;
+            if (logoutBtn) logoutBtn.style.display = 'block';
+        } else {
+            // User is logged out, display login button
+            authContainer.innerHTML = `
+                <button class="login-steam-btn" onclick="loginWithSteam()">
+                    <i class="fab fa-steam"></i> Login with Steam
+                </button>
+            `;
+            if (logoutBtn) logoutBtn.style.display = 'none';
+        }
+    }
+}
+
+// Placeholder for loginWithSteam function (if not defined elsewhere)
+window.loginWithSteam = function() {
+    alert('Login with Steam functionality not yet implemented.');
+    // In a real application, this would redirect to Steam OpenID
+};
+
+// Placeholder for logout function (if not defined elsewhere)
+window.logout = function() {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('jwt'); // Also remove jwt if it's used
+    updateAuthContainer();
+    alert('Logged out successfully.');
+    // Optionally redirect to home page
+    window.location.href = 'index.html';
+};
+
+
 // Export functions for use in other scripts
-export { API_BASE, apiGet, apiPost, updateBalanceDisplay, loadCommonComponents, setupCurrencySwitch, applySavedTheme, getDecodedSteamID, getCurrencyPreference };
+export { API_BASE, apiGet, apiPost, updateBalanceDisplay, loadCommonComponents, setupCurrencySwitch, applySavedTheme, getDecodedSteamID, getCurrencyPreference, updateAuthContainer };
