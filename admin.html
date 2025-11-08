@@ -6,7 +6,7 @@
     <title>Admin Panel</title>
     <link rel="stylesheet" href="style.css">
     <script src="js/jwt-decode.min.js"></script>
-    <script type="module" src="common.js"></script>
+    <script src="common.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,12 +15,6 @@
             <div id="sidebar-placeholder"></div>
             <main class="admin-container">
                 <h1>Admin Panel</h1>
-                <div class="admin-tabs">
-                    <button class="tab-button active" data-tab="dashboard">Dashboard</button>
-                    <button class="tab-button" data-tab="user-management">User Management</button>
-                    <button class="tab-button" data-tab="case-management">Case Management</button>
-                    <button class="tab-button" data-tab="site-settings">Site Settings</button>
-                </div>
                 <div id="admin-content">
                     <p>Verifying access...</p>
                 </div>
@@ -28,17 +22,15 @@
         </div>
     </div>
 
-    <script src="js/jwt-decode.min.js"></script>
-    <script type="module">
-        import { loadCommonComponents, setupCurrencySwitch, applySavedTheme } from './common.js';
-
-        document.addEventListener("DOMContentLoaded", async () => {
-            await loadCommonComponents();
-            setupCurrencySwitch();
-            applySavedTheme();
-            checkAdminAccess();
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadHeader();
+            loadSidebar();
+            // checkAdminAccess(); // Moved to common.js after auth is handled
         });
 
+        // Moved to common.js
+        /*
         function getDecodedSteamID() {
             const token = localStorage.getItem("auth_token");
             if (!token) return null;
@@ -54,156 +46,50 @@
         async function checkAdminAccess() {
             const authorizedSteamID = "76561199163202169"; // your admin SteamID
             const loggedInSteamID = getDecodedSteamID();
-            const adminContent = document.getElementById("admin-content");
 
             if (!loggedInSteamID) {
-                adminContent.innerHTML = "<p>Please log in with Steam to access the admin panel.</p>";
+                document.getElementById("admin-content").innerHTML =
+                    "<p>Please log in with Steam to access the admin panel.</p>";
                 return;
             }
 
             if (loggedInSteamID === authorizedSteamID) {
-                initAdminPanel(loggedInSteamID);
+                renderAdminForm(loggedInSteamID);
             } else {
-                adminContent.innerHTML = "<p>Access Denied: Your SteamID does not have administrative privileges.</p>";
+                document.getElementById("admin-content").innerHTML =
+                    "<p>Access Denied: Your SteamID does not have administrative privileges.</p>";
             }
         }
+        */
 
-        function initAdminPanel(adminSteamID) {
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    button.classList.add('active');
-                    renderAdminTab(button.dataset.tab, adminSteamID);
-                });
-            });
-            renderAdminTab('dashboard', adminSteamID); // Load dashboard by default
-        }
-
-        function renderAdminTab(tabName, adminSteamID) {
+        function renderAdminForm(adminSteamID) {
             const adminContent = document.getElementById("admin-content");
-            adminContent.innerHTML = ''; // Clear previous content
+            adminContent.innerHTML = `
+                <h2>Add Balance</h2>
+                <form id="add-balance-form">
+                    <div class="form-group">
+                        <label for="targetSteamID">Target SteamID:</label>
+                        <input type="text" id="targetSteamID" name="targetSteamID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="currency">Currency:</label>
+                        <select id="currency" name="currency" required>
+                            <option value="COIN">COIN</option>
+                            <option value="GEM">GEM</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" id="amount" name="amount" required min="0">
+                    </div>
+                    <button type="submit" class="btn">Add Balance</button>
+                </form>
+                <div id="response-message"></div>
+            `;
 
-            switch (tabName) {
-                case 'dashboard':
-                    adminContent.innerHTML = `
-                        <h2>Dashboard</h2>
-                        <p>Welcome to the admin dashboard. Here you can see an overview of your site's activity.</p>
-                        <div class="dashboard-stats">
-                            <div class="stat-card"><h3>Total Users</h3><p>1,234</p></div>
-                            <div class="stat-card"><h3>Cases Opened</h3><p>5,678</p></div>
-                            <div class="stat-card"><h3>Total Deposits</h3><p>$12,345</p></div>
-                            <div class="stat-card"><h3>Total Withdrawals</h3><p>$8,765</p></div>
-                        </div>
-                    `;
-                    break;
-                case 'user-management':
-                    adminContent.innerHTML = `
-                        <h2>User Management</h2>
-                        <form id="add-balance-form">
-                            <h3>Add Balance to User</h3>
-                            <div class="form-group">
-                                <label for="targetSteamID">Target SteamID:</label>
-                                <input type="text" id="targetSteamID" name="targetSteamID" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="currency">Currency:</label>
-                                <select id="currency" name="currency" required>
-                                    <option value="COIN">COIN</option>
-                                    <option value="GEM">GEM</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="amount">Amount:</label>
-                                <input type="number" id="amount" name="amount" required min="0">
-                            </div>
-                            <button type="submit" class="btn">Add Balance</button>
-                        </form>
-                        <div id="response-message"></div>
-
-                        <h3>Search Users</h3>
-                        <div class="form-group">
-                            <label for="searchUser">Search by SteamID or Username:</label>
-                            <input type="text" id="searchUser" placeholder="Enter SteamID or Username">
-                            <button class="btn" id="searchUserBtn">Search</button>
-                        </div>
-                        <div id="user-search-results"></div>
-                    `;
-                    document.getElementById("add-balance-form").addEventListener("submit", (e) =>
-                        handleAddBalanceSubmit(e, adminSteamID)
-                    );
-                    document.getElementById("searchUserBtn").addEventListener("click", () =>
-                        searchUsers(adminSteamID)
-                    );
-                    break;
-                case 'case-management':
-                    adminContent.innerHTML = `
-                        <h2>Case Management</h2>
-                        <p>Manage your sweepstakes cases here.</p>
-                        <h3>Create New Case</h3>
-                        <form id="create-case-form">
-                            <div class="form-group">
-                                <label for="caseName">Case Name:</label>
-                                <input type="text" id="caseName" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="casePrice">Price (Coins):</label>
-                                <input type="number" id="casePrice" min="0" step="0.01" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="caseImage">Image URL:</label>
-                                <input type="text" id="caseImage" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="caseRTP">RTP (%):</label>
-                                <input type="number" id="caseRTP" min="0" max="100" step="0.1" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="caseVolatility">Volatility:</label>
-                                <select id="caseVolatility" required>
-                                    <option value="low">Low</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="high">High</option>
-                                </select>
-                            </div>
-                            <h3>Case Drops (Add items and their odds)</h3>
-                            <div id="case-drops-container">
-                                <!-- Dynamic drop items will be added here -->
-                            </div>
-                            <button type="button" class="btn" id="addDropItemBtn">Add Drop Item</button>
-                            <button type="submit" class="btn">Create Case</button>
-                        </form>
-                        <div id="case-management-response"></div>
-                    `;
-                    document.getElementById('addDropItemBtn').addEventListener('click', addDropItemField);
-                    document.getElementById('create-case-form').addEventListener('submit', (e) => handleCreateCase(e, adminSteamID));
-                    addDropItemField(); // Add initial drop item field
-                    break;
-                case 'site-settings':
-                    adminContent.innerHTML = `
-                        <h2>Site Settings</h2>
-                        <p>Configure global settings for your website.</p>
-                        <form id="site-settings-form">
-                            <div class="form-group">
-                                <label for="maintenanceMode">Maintenance Mode:</label>
-                                <select id="maintenanceMode">
-                                    <option value="off">Off</option>
-                                    <option value="on">On</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="welcomeMessage">Welcome Message:</label>
-                                <input type="text" id="welcomeMessage" placeholder="Enter welcome message">
-                            </div>
-                            <button type="submit" class="btn">Save Settings</button>
-                        </form>
-                        <div id="site-settings-response"></div>
-                    `;
-                    document.getElementById('site-settings-form').addEventListener('submit', (e) => handleSaveSettings(e, adminSteamID));
-                    break;
-                default:
-                    adminContent.innerHTML = `<p>Select a tab to manage.</p>`;
-            }
+            document.getElementById("add-balance-form").addEventListener("submit", (e) =>
+                handleAddBalanceSubmit(e, adminSteamID)
+            );
         }
 
         async function handleAddBalanceSubmit(event, adminSteamID) {
@@ -239,174 +125,6 @@
             } catch (error) {
                 console.error("Error adding balance:", error);
                 responseMessageDiv.innerHTML = `<p class="error">An unexpected error occurred: ${error.message}</p>`;
-            }
-        }
-
-        async function searchUsers(adminSteamID) {
-            const searchUser = document.getElementById('searchUser').value;
-            const userSearchResultsDiv = document.getElementById('user-search-results');
-            userSearchResultsDiv.innerHTML = '<p>Searching...</p>';
-
-            try {
-                // This would typically be an API call to your backend
-                // For now, a mock response
-                const mockUsers = [
-                    { steamid: '76561199163202169', username: 'AdminUser', balance: { COIN: 1000, GEM: 500 } },
-                    { steamid: '76561198123456789', username: 'TestUser1', balance: { COIN: 150, GEM: 20 } },
-                    { steamid: '76561198987654321', username: 'AnotherUser', balance: { COIN: 50, GEM: 10 } },
-                ];
-
-                const results = mockUsers.filter(user =>
-                    user.steamid.includes(searchUser) || user.username.toLowerCase().includes(searchUser.toLowerCase())
-                );
-
-                if (results.length > 0) {
-                    userSearchResultsDiv.innerHTML = `
-                        <h3>Search Results:</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>SteamID</th>
-                                    <th>Username</th>
-                                    <th>Coins</th>
-                                    <th>Gems</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${results.map(user => `
-                                    <tr>
-                                        <td>${user.steamid}</td>
-                                        <td>${user.username}</td>
-                                        <td>${user.balance.COIN}</td>
-                                        <td>${user.balance.GEM}</td>
-                                        <td><button class="btn small-btn" onclick="editUser('${user.steamid}')">Edit</button></td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    `;
-                } else {
-                    userSearchResultsDiv.innerHTML = '<p>No users found.</p>';
-                }
-
-            } catch (error) {
-                console.error("Error searching users:", error);
-                userSearchResultsDiv.innerHTML = `<p class="error">Error searching users: ${error.message}</p>`;
-            }
-        }
-
-        function addDropItemField() {
-            const container = document.getElementById('case-drops-container');
-            const index = container.children.length;
-            const dropItemHtml = `
-                <div class="form-group drop-item-group">
-                    <h4>Drop Item ${index + 1}</h4>
-                    <label for="dropItemName${index}">Item Name:</label>
-                    <input type="text" id="dropItemName${index}" class="drop-item-name" required>
-                    <label for="dropItemOdds${index}">Odds (%):</label>
-                    <input type="number" id="dropItemOdds${index}" class="drop-item-odds" min="0.01" max="100" step="0.01" required>
-                    <label for="dropItemValue${index}">Value (Coins):</label>
-                    <input type="number" id="dropItemValue${index}" class="drop-item-value" min="0" step="0.01" required>
-                    <label for="dropItemRarity${index}">Rarity:</label>
-                    <select id="dropItemRarity${index}" class="drop-item-rarity" required>
-                        <option value="common">Common</option>
-                        <option value="uncommon">Uncommon</option>
-                        <option value="rare">Rare</option>
-                        <option value="very-rare">Very Rare</option>
-                        <option value="mythical">Mythical</option>
-                        <option value="legendary">Legendary</option>
-                        <option value="epic">Epic</option>
-                    </select>
-                    <button type="button" class="btn small-btn remove-drop-item-btn">Remove</button>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', dropItemHtml);
-
-            // Add event listener for the new remove button
-            container.lastElementChild.querySelector('.remove-drop-item-btn').addEventListener('click', (e) => {
-                e.target.closest('.drop-item-group').remove();
-            });
-        }
-
-        async function handleCreateCase(event, adminSteamID) {
-            event.preventDefault();
-            const responseDiv = document.getElementById('case-management-response');
-            responseDiv.innerHTML = '<p>Creating case...</p>';
-
-            const caseName = document.getElementById('caseName').value;
-            const casePrice = parseFloat(document.getElementById('casePrice').value);
-            const caseImage = document.getElementById('caseImage').value;
-            const caseRTP = parseFloat(document.getElementById('caseRTP').value);
-            const caseVolatility = document.getElementById('caseVolatility').value;
-
-            const dropItems = [];
-            document.querySelectorAll('.drop-item-group').forEach((group, index) => {
-                dropItems.push({
-                    name: group.querySelector('.drop-item-name').value,
-                    odds: parseFloat(group.querySelector('.drop-item-odds').value),
-                    value: parseFloat(group.querySelector('.drop-item-value').value),
-                    rarity: group.querySelector('.drop-item-rarity').value,
-                });
-            });
-
-            // Basic validation for odds
-            const totalOdds = dropItems.reduce((sum, item) => sum + item.odds, 0);
-            if (totalOdds !== 100) {
-                responseDiv.innerHTML = '<p class="error">Error: Total odds for drop items must equal 100%.</p>';
-                return;
-            }
-
-            const caseData = {
-                name: caseName,
-                price: casePrice,
-                image: caseImage,
-                rtp: caseRTP,
-                volatility: caseVolatility,
-                drops: dropItems,
-                admin_steam_id: adminSteamID // Assuming admin_steam_id is needed by API
-            };
-
-            try {
-                // This would typically be an API call to your backend
-                // For now, a mock success
-                console.log("Attempting to create case:", caseData);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-
-                responseDiv.innerHTML = '<p class="success">Case created successfully!</p>';
-                document.getElementById('create-case-form').reset();
-                document.getElementById('case-drops-container').innerHTML = '';
-                addDropItemField(); // Add an empty field for the next case
-            } catch (error) {
-                console.error("Error creating case:", error);
-                responseDiv.innerHTML = `<p class="error">Error creating case: ${error.message}</p>`;
-            }
-        }
-
-        async function handleSaveSettings(event, adminSteamID) {
-            event.preventDefault();
-            const responseDiv = document.getElementById('site-settings-response');
-            responseDiv.innerHTML = '<p>Saving settings...</p>';
-
-            const maintenanceMode = document.getElementById('maintenanceMode').value;
-            const welcomeMessage = document.getElementById('welcomeMessage').value;
-
-            const settingsData = {
-                maintenance_mode: maintenanceMode,
-                welcome_message: welcomeMessage,
-                admin_steam_id: adminSteamID // Assuming admin_steam_id is needed by API
-            };
-
-            try {
-                // This would typically be an API call to your backend
-                // For now, a mock success
-                console.log("Attempting to save settings:", settingsData);
-                await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-
-                responseDiv.innerHTML = '<p class="success">Settings saved successfully!</p>';
-            } catch (error) {
-                console.error("Error saving settings:", error);
-                responseDiv.innerHTML = `<p class="error">Error saving settings: ${error.message}</p>`;
             }
         }
     </script>

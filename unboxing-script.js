@@ -1,20 +1,8 @@
-import { caseData, calculateRTP } from './cases-script.js';
-import { apiGet, apiPost, updateBalanceDisplay, getDecodedSteamID, getCurrencyPreference } from './common.js';
 
-let currentCase = null; // Store the currently viewed case
 
-async function getCaseById(caseId) {
-    if (caseData.length === 0) {
-        // If caseData is not yet loaded in cases-script.js, fetch it
-        // This might happen if a user navigates directly to unboxing.html
-        try {
-            const response = await apiGet("/crate/list");
-            caseData = response.crates;
-        } catch (error) {
-            console.error("Error fetching cases for unboxing page:", error);
-            return null;
-        }
-    }
+import { caseData, rollCrate, calculateRTP } from './cases-script.js';
+
+function getCaseById(caseId) {
     return caseData.find(c => c.id === caseId);
 }
 
@@ -73,50 +61,23 @@ function populateReel(caseObj, winningItem = null) {
     });
 }
 
-async function openCase(caseId) {
-    const token = localStorage.getItem("jwt"); // Assuming JWT is stored here
-    if (!token) {
-        alert("You must be logged in to open cases.");
-        return null;
-    }
-
-    const userId = getDecodedSteamID(); // Get user ID from JWT
-    if (!userId) {
-        alert("Could not retrieve user ID. Please log in again.");
-        return null;
-    }
-
-    const currencyPreference = getCurrencyPreference(); // 'coins' or 'gems'
-    const currencyCode = currencyPreference.toUpperCase(); // Convert to "COIN" or "GEM" for API
-
-    try {
-        const response = await apiPost(`/crate/open`, {
-            crate_id: caseId,
-            user_id: userId,
-            currency_code: currencyCode
-        });
-        if (response && response.item && response.new_balance !== undefined) {
-            updateBalanceDisplay(response.new_balance);
-            return response.item;
-        } else {
-            throw new Error("Invalid response from API when opening case.");
-        }
-    } catch (error) {
-        console.error("Error opening case:", error);
-        alert(error.message || "An error occurred while opening the case. Please try again.");
-        return null;
-    }
-}
-
 async function startSpin(caseObj) {
-    const winningItem = await openCase(caseObj.id);
-
-    if (!winningItem) {
-        return; // Error already handled in openCase
+    const steamid = localStorage.getItem("steamid");
+    if (!steamid) {
+        alert("Please log in to open cases.");
+        return;
     }
 
     try {
-        populateReel(caseObj, winningItem); // Re-populate reel with winning item at the fixed landing spot
+        // Use the local rollCrate function instead of fetching from API
+        const winningItemWithWear = rollCrate(caseObj.id);
+
+        if (!winningItemWithWear) {
+            alert("Error: Could not determine winning item.");
+            return;
+        }
+
+        populateReel(caseObj, winningItemWithWear); // Re-populate reel with winning item at the fixed landing spot
 
         // Calculate scroll position to center the winning item at the landing spot
         const containerWidth = unboxingReel.parentElement.offsetWidth;
@@ -144,10 +105,10 @@ async function startSpin(caseObj) {
                 const popupItemValue = document.getElementById("popupItemValue");
                 const unboxedItemPopup = document.getElementById("unboxedItemPopup");
 
-                popupItemImage.src = winningItem.image;
-                popupItemImage.alt = winningItem.name;
-                popupItemName.textContent = winningItem.name;
-                popupItemValue.textContent = `$${winningItem.price.toFixed(2)}`;
+                popupItemImage.src = winningItemWithWear.image;
+                popupItemImage.alt = winningItemWithWear.name;
+                popupItemName.textContent = winningItemWithWear.name;
+                popupItemValue.textContent = `$${winningItemWithWear.price.toFixed(2)}`;
 
                 unboxedItemPopup.classList.add("show");
 
@@ -157,7 +118,7 @@ async function startSpin(caseObj) {
                 }, 3000); // Popup visible for 3 seconds
 
                 // Add notification (simple console log for now, can be expanded)
-                console.log(`You unboxed: ${winningItem.name} worth $${winningItem.price.toFixed(2)}!`);
+                console.log(`You unboxed: ${winningItemWithWear.name} worth $${winningItemWithWear.price.toFixed(2)}!`);
 
             }, 1000); // After the slow down animation (1 second)
         }, 3000); // After the fast spin animation (3 seconds)
@@ -168,17 +129,17 @@ async function startSpin(caseObj) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async () => { // Made the callback async
+document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const caseId = urlParams.get("caseId");
-    currentCase = await getCaseById(caseId); // Await the async function
+    const selectedCase = getCaseById(caseId);
 
-    if (currentCase) {
-        populateUnboxingPage(currentCase);
-        populateReel(currentCase); // Populate reel with random items on page load
-        document.getElementById("openCaseButton").addEventListener("click", () => startSpin(currentCase));
-        document.querySelector(".demo-spin-btn").addEventListener("click", () => startSpin(currentCase)); // Demo spin uses same logic for now
+    if (selectedCase) {
+        populateUnboxingPage(selectedCase);
+        populateReel(selectedCase); // Populate reel with random items on page load
+        document.getElementById("openCaseButton").addEventListener("click", () => startSpin(selectedCase));
+        document.querySelector(".demo-spin-btn").addEventListener("click", () => startSpin(selectedCase)); // Demo spin uses same logic for now
     } else {
-        document.querySelector(".unboxing-page").innerHTML = "<p>Case not found or failed to load.</p>";
+        document.querySelector(".unboxing-page").innerHTML = "<p>Case not found.</p>";
     }
 });

@@ -1,17 +1,207 @@
-import { apiGet } from './common.js';
+const API_BASE = "https://api.tryharderapi.lol";
 
-export let caseData = []; // Will be populated from API
-
-// Mapping for knife names to their image files in scraped_images
-const knifeImageMap = {
-    "Karambit | Doppler (Phase 2)": "Karambit  Doppler (Phase 2)_400.png",
-    "Butterfly Knife | Fade": "Butterfly Knife  Fade_390.png",
-    "Karambit | Gamma Doppler (Emerald)": "Karambit  Gamma Doppler (Emerald)_401.png",
-    "M9 Bayonet | Doppler (Sapphire)": "M9 Bayonet  Doppler (Sapphire)_395.png",
-    "Talon Knife | Marble Fade": "Talon Knife  Marble Fade_405.png",
-    "Karambit | Lore": "Karambit  Lore_402.png",
-    // Add other knives as needed based on scraped_images
-};
+export const caseData = [
+    {
+        id: "dust-dweller",
+        name: "Dust Dweller Case",
+        price: 0.10,
+        currency: "COIN",
+        volatility: "Low",
+        image: "/all_skins_in_game/P2000AmberFade.png", // Most valuable skin in this case
+        drops: [
+            {"name": "P2000 | Amber Fade", "image": "/all_skins_in_game/P2000AmberFade.png", "odds": 0.20, "value": 0.035},
+            {"name": "MP9 | Sand Scale", "image": "/all_skins_in_game/MP9SandScale.png", "odds": 0.18, "value": 0.05},
+            {"name": "Nova | Sand Dune", "image": "/all_skins_in_game/NovaSandDune.png", "odds": 0.15, "value": 0.07},
+            {"name": "G3SG1 | Desert Storm", "image": "/all_skins_in_game/G3SG1DesertStorm.png", "odds": 0.12, "value": 0.085},
+            {"name": "UMP-45 | Scorched", "image": "/all_skins_in_game/UMP-45Scorched.png", "odds": 0.10, "value": 0.10},
+            {"name": "Dual Berettas | Stained", "image": "/all_skins_in_game/DualBerettasStained.png", "odds": 0.08, "value": 0.12},
+            {"name": "PP-Bizon | Sand Dashed", "image": "/all_skins_in_game/PP-BizonSandDashed.png", "odds": 0.07, "value": 0.14},
+            {"name": "Sawed-Off | Sage Spray", "image": "/all_skins_in_game/Sawed-OffSageSpray.png", "odds": 0.05, "value": 0.155},
+            {"name": "Negev | Army Sheen", "image": "/all_skins_in_game/NegevArmySheen.png", "odds": 0.03, "value": 0.17},
+            {"name": "M249 | Gator Mesh", "image": "/all_skins_in_game/M249GatorMesh.png", "odds": 0.02, "value": 0.26},
+        ]
+    },
+    {
+        id: "cobblestone-cache",
+        name: "Cobblestone Cache",
+        price: 0.25,
+        currency: "COIN",
+        volatility: "Low",
+        image: "/all_skins_in_game/Tec-9ArmySheen.png", // Most valuable skin in this case
+        drops: [
+            {"name": "Five-SeveN | Urban Hazard", "image": "/all_skins_in_game/Five-SeveNUrbanHazard.png", "odds": 0.20, "value": 0.075},
+            {"name": "MP7 | Urban Hazard", "image": "/all_skins_in_game/MP7UrbanHazard.png", "odds": 0.18, "value": 0.105},
+            {"name": "Galil AR | Urban Rubble", "image": "/all_skins_in_game/GalilARUrbanRubble.png", "odds": 0.15, "value": 0.15},
+            {"name": "FAMAS | Colony", "image": "/all_skins_in_game/FAMASColony.png", "odds": 0.12, "value": 0.18},
+            {"name": "P90 | Sand Spray", "image": "/all_skins_in_game/P90SandSpray.png", "odds": 0.10, "value": 0.225},
+            {"name": "SSG 08 | Sand Dune", "image": "/all_skins_in_game/SSG08SandDune.png", "odds": 0.08, "value": 0.30},
+            {"name": "XM1014 | Urban Perforated", "image": "/all_skins_in_game/XM1014UrbanPerforated.png", "odds": 0.07, "value": 0.375},
+            {"name": "CZ75-Auto | Army Sheen", "image": "/all_skins_in_game/CZ75-AutoArmySheen.png", "odds": 0.05, "value": 0.45},
+            {"name": "MAG-7 | Sand Dune", "image": "/all_skins_in_game/MAG-7SandDune.png", "odds": 0.03, "value": 0.60},
+            {"name": "Tec-9 | Army Sheen", "image": "/all_skins_in_game/Tec-9ArmySheen.png", "odds": 0.02, "value": 0.75},
+        ]
+    },
+    {
+        id: "inferno-blaze",
+        name: "Inferno Blaze Case",
+        price: 0.50,
+        currency: "COIN",
+        volatility: "Medium",
+        image: "/all_skins_in_game/M4A4Hellfire.png", // Most valuable skin in this case
+        drops: [
+            {"name": "Glock-18 | High Beam", "image": "/all_skins_in_game/Glock-18HighBeam.png", "odds": 0.20, "value": 0.055},
+            {"name": "MP9 | Hot Rod", "image": "/all_skins_in_game/MP9HotRod.png", "odds": 0.18, "value": 0.11},
+            {"name": "Nova | Blaze", "image": "/all_skins_in_game/NovaBlaze.png", "odds": 0.15, "value": 0.165},
+            {"name": "P250 | Inferno", "image": "/all_skins_in_game/P250Inferno.png", "odds": 0.12, "value": 0.22},
+            {"name": "Galil AR | Firefight", "image": "/all_skins_in_game/GalilARFirefight.png", "odds": 0.10, "value": 0.275},
+            {"name": "M4A1-S | Flashback", "image": "/all_skins_in_game/M4A1-SFlashback.png", "odds": 0.08, "value": 0.41},
+            {"name": "AK-47 | Redline", "image": "/all_skins_in_game/AK-47Redline.png", "odds": 0.07, "value": 0.55},
+            {"name": "AWP | Fever Dream", "image": "/all_skins_in_game/AWPFeverDream.png", "odds": 0.05, "value": 1.10},
+            {"name": "Desert Eagle | Blaze", "image": "/all_skins_in_game/DesertEagleBlaze.png", "odds": 0.03, "value": 2.75},
+            {"name": "M4A4 | Hellfire", "image": "/all_skins_in_game/M4A4Hellfire.png", "odds": 0.02, "value": 5.50},
+        ]
+    },
+    {
+        id: "mirage-mystery",
+        name: "Mirage Mystery Case",
+        price: 0.75,
+        currency: "COIN",
+        volatility: "Medium",
+        image: "/all_skins_in_game/KarambitDoppler(Phase2).png", // Most valuable skin in this case
+        drops: [
+            {"name": "USP-S | Cortex", "image": "/all_skins_in_game/USP-SCortex.png", "odds": 0.20, "value": 0.06},
+            {"name": "MAC-10 | Neon Rider", "image": "/all_skins_in_game/MAC-10NeonRider.png", "odds": 0.18, "value": 0.12},
+            {"name": "MP5-SD | Phosphor", "image": "/all_skins_in_game/MP5-SDPhosphor.png", "odds": 0.15, "value": 0.18},
+            {"name": "FAMAS | Roll Cage", "image": "/all_skins_in_game/FAMASRollCage.png", "odds": 0.12, "value": 0.24},
+            {"name": "P2000 | Imperial Dragon", "image": "/all_skins_in_game/P2000ImperialDragon.png", "odds": 0.10, "value": 0.30},
+            {"name": "SSG 08 | Dragonfire", "image": "/all_skins_in_game/SSG08Dragonfire.png", "odds": 0.08, "value": 0.40},
+            {"name": "AWP | Hyper Beast", "image": "/all_skins_in_game/AWPHyperBeast.png", "odds": 0.07, "value": 1.00},
+            {"name": "AK-47 | Neon Rider", "image": "/all_skins_in_game/AK-47NeonRider.png", "odds": 0.05, "value": 2.00},
+            {"name": "M4A4 | Neo-Noir", "image": "/all_skins_in_game/M4A4Neo-Noir.png", "odds": 0.03, "value": 4.00},
+            {"name": "Karambit | Doppler (Phase 2)", "image": "/all_skins_in_game/KarambitDoppler(Phase2).png", "odds": 0.02, "value": 10.00},
+        ]
+    },
+    {
+        id: "nuke-nuclear",
+        name: "Nuke Nuclear Case",
+        price: 1.00,
+        currency: "COIN",
+        volatility: "Medium",
+        image: "/all_skins_in_game/M4A4RadiationHazard.png", // Most valuable skin in this case
+        drops: [
+            {"name": "Glock-18 | Nuclear Garden", "image": "/all_skins_in_game/Glock-18NuclearGarden.png", "odds": 0.20, "value": 0.09},
+            {"name": "MP9 | Nuclear Threat", "image": "/all_skins_in_game/MP9NuclearThreat.png", "odds": 0.18, "value": 0.18},
+            {"name": "Nova | Nuclear Threat", "image": "/all_skins_in_game/NovaNuclearThreat.png", "odds": 0.15, "value": 0.27},
+            {"name": "P250 | Nuclear Threat", "image": "/all_skins_in_game/P250NuclearThreat.png", "odds": 0.12, "value": 0.36},
+            {"name": "Galil AR | Nuclear Threat", "image": "/all_skins_in_game/GalilARNuclearThreat.png", "odds": 0.10, "value": 0.45},
+            {"name": "M4A1-S | Atomic Alloy", "image": "/all_skins_in_game/M4A1-SAtomicAlloy.png", "odds": 0.08, "value": 0.68},
+            {"name": "AK-47 | Wasteland Rebel", "image": "/all_skins_in_game/AK-47WastelandRebel.png", "odds": 0.07, "value": 1.35},
+            {"name": "AWP | Containment Breach", "image": "/all_skins_in_game/AWPContainmentBreach.png", "odds": 0.05, "value": 2.70},
+            {"name": "Desert Eagle | Code Red", "image": "/all_skins_in_game/DesertEagleCodeRed.png", "odds": 0.03, "value": 5.40},
+            {"name": "M4A4 | Radiation Hazard", "image": "/all_skins_in_game/M4A4RadiationHazard.png", "odds": 0.02, "value": 11.25},
+        ]
+    },
+    {
+        id: "vertigo-vault",
+        name: "Vertigo Vault Case",
+        price: 1.50,
+        currency: "COIN",
+        volatility: "High",
+        image: "/all_skins_in_game/ButterflyKnifeFade.png", // Most valuable skin in this case
+        drops: [
+            {"name": "USP-S | Blueprint", "image": "/all_skins_in_game/USP-SBlueprint.png", "odds": 0.20, "value": 0.13},
+            {"name": "MAC-10 | Blueprint", "image": "/all_skins_in_game/MAC-10Blueprint.png", "odds": 0.18, "value": 0.265},
+            {"name": "MP5-SD | Blueprint", "image": "/all_skins_in_game/MP5-SDBlueprint.png", "odds": 0.15, "value": 0.40},
+            {"name": "FAMAS | Blueprint", "image": "/all_skins_in_game/FAMASBlueprint.png", "odds": 0.12, "value": 0.53},
+            {"name": "P2000 | Blueprint", "image": "/all_skins_in_game/P2000Blueprint.png", "odds": 0.10, "value": 0.66},
+            {"name": "SSG 08 | Blueprint", "image": "/all_skins_in_game/SSG08Blueprint.png", "odds": 0.08, "value": 0.88},
+            {"name": "AWP | Graphite", "image": "/all_skins_in_game/AWPGraphite.png", "odds": 0.07, "value": 1.77},
+            {"name": "AK-47 | Frontside Misty", "image": "/all_skins_in_game/AK-47FrontsideMisty.png", "odds": 0.05, "value": 3.53},
+            {"name": "M4A4 | The Emperor", "image": "/all_skins_in_game/M4A4TheEmperor.png", "odds": 0.03, "value": 6.62},
+            {"name": "Butterfly Knife | Fade", "image": "/all_skins_in_game/ButterflyKnifeFade.png", "odds": 0.02, "value": 22.00},
+        ]
+    },
+    {
+        id: "ancient-artifact",
+        name: "Ancient Artifact Case",
+        price: 2.00,
+        currency: "COIN",
+        volatility: "High",
+        image: "/all_skins_in_game/KarambitGammaDoppler(Emerald).png", // Most valuable skin in this case
+        drops: [
+            {"name": "Glock-18 | Water Elemental", "image": "/all_skins_in_game/Glock-18WaterElemental.png", "odds": 0.20, "value": 0.16},
+            {"name": "MP9 | Hydra", "image": "/all_skins_in_game/MP9Hydra.png", "odds": 0.18, "value": 0.315},
+            {"name": "Nova | Bloomstick", "image": "/all_skins_in_game/NovaBloomstick.png", "odds": 0.15, "value": 0.475},
+            {"name": "P250 | See Ya Later", "image": "/all_skins_in_game/P250SeeYaLater.png", "odds": 0.12, "value": 0.63},
+            {"name": "Galil AR | Cerberus", "image": "/all_skins_in_game/GalilARCerberus.png", "odds": 0.10, "value": 0.79},
+            {"name": "M4A1-S | Golden Coil", "image": "/all_skins_in_game/M4A1-SGoldenCoil.png", "odds": 0.08, "value": 1.18},
+            {"name": "AK-47 | Aquamarine Revenge", "image": "/all_skins_in_game/AK-47AquamarineRevenge.png", "odds": 0.07, "value": 2.37},
+            {"name": "AWP | Gungnir", "image": "/all_skins_in_game/AWPGungnir.png", "odds": 0.05, "value": 4.74},
+            {"name": "Desert Eagle | Emerald Jörmungandr", "image": "/all_skins_in_game/DesertEagleEmeraldJörmungandr.png", "odds": 0.03, "value": 9.85},
+            {"name": "Karambit | Gamma Doppler (Emerald)", "image": "/all_skins_in_game/KarambitGammaDoppler(Emerald).png", "odds": 0.02, "value": 29.60},
+        ]
+    },
+    {
+        id: "overpass-overhaul",
+        name: "Overpass Overhaul Case",
+        price: 2.50,
+        currency: "COIN",
+        volatility: "High",
+        image: "/all_skins_in_game/M9BayonetDoppler(Sapphire).png", // Most valuable skin in this case
+        drops: [
+            {"name": "USP-S | Kill Confirmed", "image": "/all_skins_in_game/USP-SKillConfirmed.png", "odds": 0.20, "value": 0.20},
+            {"name": "MAC-10 | Gold Brick", "image": "/all_skins_in_game/MAC-10GoldBrick.png", "odds": 0.18, "value": 0.40},
+            {"name": "MP5-SD | Agent", "image": "/all_skins_in_game/MP5-SDAgent.png", "odds": 0.15, "value": 0.60},
+            {"name": "FAMAS | Commemoration", "image": "/all_skins_in_game/FAMASCommemoration.png", "odds": 0.12, "value": 0.80},
+            {"name": "P2000 | Ocean Foam", "image": "/all_skins_in_game/P2000OceanFoam.png", "odds": 0.10, "value": 1.00},
+            {"name": "SSG 08 | Blood in the Water", "image": "/all_skins_in_game/SSG08BloodintheWater.png", "odds": 0.08, "value": 1.40},
+            {"name": "AWP | Wildfire", "image": "/all_skins_in_game/AWPWildfire.png", "odds": 0.07, "value": 2.80},
+            {"name": "AK-47 | Vulcan", "image": "/all_skins_in_game/AK-47Vulcan.png", "odds": 0.05, "value": 5.60},
+            {"name": "M4A4 | Asiimov", "image": "/all_skins_in_game/M4A4Asiimov.png", "odds": 0.03, "value": 11.20},
+            {"name": "M9 Bayonet | Doppler (Sapphire)", "image": "/all_skins_in_game/M9BayonetDoppler(Sapphire).png", "odds": 0.02, "value": 40.00},
+        ]
+    },
+    {
+        id: "cache-contraband",
+        name: "Cache Contraband Case",
+        price: 3.00,
+        currency: "COIN",
+        volatility: "High",
+        image: "/all_skins_in_game/TalonKnifeMarbleFade.png", // Most valuable skin in this case
+        drops: [
+            {"name": "Glock-18 | Fade", "image": "/all_skins_in_game/Glock-18Fade.png", "odds": 0.20, "value": 0.23},
+            {"name": "MP9 | Stained Glass", "image": "/all_skins_in_game/MP9StainedGlass.png", "odds": 0.18, "value": 0.465},
+            {"name": "Nova | Antique", "image": "/all_skins_in_game/NovaAntique.png", "odds": 0.15, "value": 0.70},
+            {"name": "P250 | Cartel", "image": "/all_skins_in_game/P250Cartel.png", "odds": 0.12, "value": 0.93},
+            {"name": "Galil AR | Sugar Rush", "image": "/all_skins_in_game/GalilARSugarRush.png", "odds": 0.10, "value": 1.165},
+            {"name": "M4A1-S | Cyrex", "image": "/all_skins_in_game/M4A1-SCyrex.png", "odds": 0.08, "value": 1.75},
+            {"name": "AK-47 | Case Hardened", "image": "/all_skins_in_game/AK-47CaseHardened.png", "odds": 0.07, "value": 3.50},
+            {"name": "AWP | Lightning Strike", "image": "/all_skins_in_game/AWPLightningStrike.png", "odds": 0.05, "value": 7.00},
+            {"name": "Desert Eagle | Fennec Fox", "image": "/all_skins_in_game/DesertEagleFennecFox.png", "odds": 0.03, "value": 14.00},
+            {"name": "Talon Knife | Marble Fade", "image": "/all_skins_in_game/TalonKnifeMarbleFade.png", "odds": 0.02, "value": 46.50},
+        ]
+    },
+    {
+        id: "train-treasures",
+        name: "Train Treasures Case",
+        price: 4.00,
+        currency: "COIN",
+        volatility: "High",
+        image: "/all_skins_in_game/KarambitLore.png", // Most valuable skin in this case
+        drops: [
+            {"name": "USP-S | Neo-Noir", "image": "/all_skins_in_game/USP-SNeo-Noir.png", "odds": 0.20, "value": 0.33},
+            {"name": "MAC-10 | Fade", "image": "/all_skins_in_game/MAC-10Fade.png", "odds": 0.18, "value": 0.66},
+            {"name": "MP5-SD | Acid Wash", "image": "/all_skins_in_game/MP5-SDAcidWash.png", "odds": 0.15, "value": 0.99},
+            {"name": "FAMAS | Styx", "image": "/all_skins_in_game/FAMASStyx.png", "odds": 0.12, "value": 1.32},
+            {"name": "P2000 | Fire Elemental", "image": "/all_skins_in_game/P2000FireElemental.png", "odds": 0.10, "value": 1.65},
+            {"name": "SSG 08 | Detour", "image": "/all_skins_in_game/SSG08Detour.png", "odds": 0.08, "value": 2.27},
+            {"name": "AWP | Asiimov", "image": "/all_skins_in_game/AWPAsiimov.png", "odds": 0.07, "value": 4.55},
+            {"name": "AK-47 | Fuel Injector", "image": "/all_skins_in_game/AK-47FuelInjector.png", "odds": 0.05, "value": 9.10},
+            {"name": "M4A4 | Temukau", "image": "/all_skins_in_game/M4A4Temukau.png", "odds": 0.03, "value": 18.20},
+            {"name": "Karambit | Lore", "image": "/all_skins_in_game/KarambitLore.png", "odds": 0.02, "value": 62.00},
+        ]
+    }
+];
 
 export function calculateRTP(caseObj) {
     let expectedValue = 0;
@@ -21,7 +211,6 @@ export function calculateRTP(caseObj) {
     return (expectedValue / caseObj.price * 100).toFixed(2);
 }
 
-// This function will no longer be used for actual rolls, but kept for demo/local fallback if needed
 export function rollCrate(caseId) {
     const crate = caseData.find(c => c.id === caseId);
     if (!crate) {
@@ -71,7 +260,7 @@ function generateCaseCard(caseObj) {
     `;
 }
 
-document.addEventListener('DOMContentLoaded', async () => { // Made the callback async
+document.addEventListener('DOMContentLoaded', () => {
     const casesGrid = document.querySelector('.cases-grid');
     const caseSearchInput = document.getElementById('case-search-input');
     const minPriceSlider = document.getElementById('min-price-slider');
@@ -133,53 +322,26 @@ document.addEventListener('DOMContentLoaded', async () => { // Made the callback
 
     // Determine the maximum price from caseData for slider max value
     let allCases = [];
-    let maxCasePrice = 0; // Initialize maxCasePrice here
 
     async function fetchCases() {
         try {
-            const response = await apiGet("/crate/list");
-            console.log("API response for /crate/list:", response); // Log the response
-            if (response && Array.isArray(response)) {
-                caseData = response.map(caseObj => ({
-                    ...caseObj,
-                    drops: caseObj.drops.map(drop => ({
-                        ...drop,
-                        odds: drop.chance
-                    }))
-                }));
-                
-                caseData.forEach(caseObj => {
-                    caseObj.drops.forEach(drop => {
-                        if (knifeImageMap[drop.name]) {
-                            drop.image = `all_skins_in_game/${knifeImageMap[drop.name]}`; // Corrected path
-                        }
-                    });
-                });
-
-                allCases = [...caseData];
-                
-                // Calculate maxCasePrice after caseData is populated
-                if (caseData.length > 0) {
-                    maxCasePrice = Math.max(...caseData.map(c => c.price));
-                }
-
-                if (minPriceSlider && maxPriceSlider) {
-                    minPriceSlider.max = maxCasePrice.toFixed(2);
-                    maxPriceSlider.max = maxCasePrice.toFixed(2);
-                    maxPriceSlider.value = maxCasePrice.toFixed(2); // Set initial max value
-                }
-
-                applyFilters(); // Render cases after fetching and maxPrice is set
-            } else {
-                console.error("API response for /crate/list did not contain an array:", response);
-                casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases: Invalid data from server.</p>`;
-                caseData = [];
-            }
+            // Since we are using local caseData, we don't need to fetch from API
+            allCases = [...caseData];
+            applyFilters(); // Render cases after fetching
         } catch (error) {
             console.error("Error fetching cases:", error);
-            casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases. Please try again later.</p>`;
-            caseData = [];
+            // Fallback to local caseData if API fails (already using it)
+            allCases = [...caseData];
+            applyFilters();
         }
+    }
+
+    // Determine the maximum price from caseData for slider max value
+    const maxCasePrice = Math.max(...caseData.map(c => c.price));
+    if (minPriceSlider && maxPriceSlider) {
+        minPriceSlider.max = maxCasePrice.toFixed(2);
+        maxPriceSlider.max = maxCasePrice.toFixed(2);
+        maxPriceSlider.value = maxCasePrice.toFixed(2); // Set initial max value
     }
 
     // Function to update slider display values
@@ -243,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Made the callback
     };
 
     // Initial render and display update
-    await fetchCases(); // Await fetching cases
+    fetchCases(); // Fetch cases on load
     updateSliderDisplay();
 
     // Event listeners for filters
