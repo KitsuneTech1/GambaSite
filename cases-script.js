@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Made the callback
                 caseData.forEach(caseObj => {
                     caseObj.drops.forEach(drop => {
                         if (knifeImageMap[drop.name]) {
-                            drop.image = `/scraped_images/${knifeImageMap[drop.name]}`;
+                            drop.image = `all_skins_in_game/${knifeImageMap[drop.name]}`; // Corrected path
                         }
                     });
                 });

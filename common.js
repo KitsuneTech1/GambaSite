@@ -54,11 +54,16 @@ async function apiPost(endpoint, data) {
     });
 }
 
-// Function to update user balance display (placeholder for now)
-function updateBalanceDisplay(balance) {
-    const balanceElement = document.getElementById('user-balance'); // Assuming an element with this ID
-    if (balanceElement) {
-        balanceElement.textContent = balance.toFixed(2);
+// Function to update user balance display
+function updateBalanceDisplay(coinBalance, gemBalance) {
+    const coinBalanceElement = document.getElementById('coin-balance');
+    const gemBalanceElement = document.getElementById('gem-balance');
+
+    if (coinBalanceElement) {
+        coinBalanceElement.textContent = coinBalance.toFixed(2);
+    }
+    if (gemBalanceElement) {
+        gemBalanceElement.textContent = gemBalance.toFixed(0); // Gems usually integer
     }
 }
 
@@ -83,6 +88,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCommonComponents(); // Ensure header and sidebar are loaded first
     setupCurrencySwitch();
     applySavedTheme();
+    // Fetch and update initial balance after components are loaded and user is authenticated
+    // This assumes a function to fetch user balance exists and returns { coins: ..., gems: ... }
+    // For now, using placeholder values or fetching from a mock API
+    const mockUserBalance = { coins: 1000.00, gems: 50 }; // Placeholder
+    updateBalanceDisplay(mockUserBalance.coins, mockUserBalance.gems);
 });
 
 // Function to set up the currency switch logic
@@ -151,13 +161,19 @@ function updateAuthContainer() {
         if (token) {
             // User is logged in, display avatar and name (placeholder for now)
             const steamId = getDecodedSteamID(); // Reuse existing function
+            // In a real app, you'd fetch the username from your backend using the steamId
+            const username = `Steam User ${steamId ? steamId.substring(0, 8) : ''}`; // Placeholder for now
             authContainer.innerHTML = `
                 <div class="user-info">
                     <img src="https://avatars.akamai.steamstatic.com/8600000000000000000000000000000000000000_full.jpg" alt="User Avatar" class="avatar">
-                    <span class="username">Steam User ${steamId ? steamId.substring(0, 8) : ''}</span>
+                    <span class="username">${username}</span>
                 </div>
             `;
             if (logoutBtn) logoutBtn.style.display = 'block';
+            // Also update balance here if user is logged in
+            // Assuming a function to fetch user balance exists and returns { coins: ..., gems: ... }
+            const mockUserBalance = { coins: 1000.00, gems: 50 }; // Placeholder
+            updateBalanceDisplay(mockUserBalance.coins, mockUserBalance.gems);
         } else {
             // User is logged out, display login button
             authContainer.innerHTML = `
