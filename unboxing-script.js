@@ -1,7 +1,5 @@
-
-
 import { caseData, calculateRTP } from './cases-script.js';
-import { apiGet, apiPost, updateBalanceDisplay } from './common.js';
+import { apiGet, apiPost, updateBalanceDisplay, getDecodedSteamID, getCurrencyPreference } from './common.js';
 
 let currentCase = null; // Store the currently viewed case
 
@@ -82,8 +80,21 @@ async function openCase(caseId) {
         return null;
     }
 
+    const userId = getDecodedSteamID(); // Get user ID from JWT
+    if (!userId) {
+        alert("Could not retrieve user ID. Please log in again.");
+        return null;
+    }
+
+    const currencyPreference = getCurrencyPreference(); // 'coins' or 'gems'
+    const currencyCode = currencyPreference.toUpperCase(); // Convert to "COIN" or "GEM" for API
+
     try {
-        const response = await apiPost(`/crate/open/${caseId}`, {}); // Empty body for POST
+        const response = await apiPost(`/crate/open`, {
+            crate_id: caseId,
+            user_id: userId,
+            currency_code: currencyCode
+        });
         if (response && response.item && response.new_balance !== undefined) {
             updateBalanceDisplay(response.new_balance);
             return response.item;

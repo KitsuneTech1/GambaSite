@@ -137,8 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchCases() {
         try {
             const response = await apiGet("/crate/list");
-            if (response && Array.isArray(response.crates)) {
-                caseData = response.crates;
+            if (response && Array.isArray(response)) {
+                // Map 'chance' from backend to 'odds' for frontend compatibility
+                caseData = response.map(caseObj => ({
+                    ...caseObj,
+                    drops: caseObj.drops.map(drop => ({
+                        ...drop,
+                        odds: drop.chance // Map 'chance' to 'odds'
+                    }))
+                }));
                 
                 // Update knife images
                 caseData.forEach(caseObj => {
@@ -152,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 allCases = [...caseData];
                 applyFilters(); // Render cases after fetching
             } else {
-                console.error("API response for /crate/list did not contain an array of crates:", response);
+                console.error("API response for /crate/list did not contain an array:", response);
                 casesGrid.innerHTML = `<p style="text-align: center; width: 100%; color: #aaa;">Failed to load cases: Invalid data from server.</p>`;
                 caseData = []; // Ensure caseData is an empty array on error
             }
