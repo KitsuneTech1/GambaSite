@@ -60,10 +60,10 @@ function updateBalanceDisplay(coinBalance, gemBalance) {
     const gemBalanceElement = document.getElementById('gem-balance');
 
     if (coinBalanceElement) {
-        coinBalanceElement.textContent = coinBalance.toFixed(2);
+        coinBalanceElement.textContent = coinBalance !== undefined ? coinBalance.toFixed(2) : '0.00';
     }
     if (gemBalanceElement) {
-        gemBalanceElement.textContent = gemBalance.toFixed(0); // Gems usually integer
+        gemBalanceElement.textContent = gemBalance !== undefined ? gemBalance.toFixed(0) : '0'; // Gems usually integer
     }
 }
 
@@ -88,11 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await loadCommonComponents(); // Ensure header and sidebar are loaded first
     setupCurrencySwitch();
     applySavedTheme();
-    // Fetch and update initial balance after components are loaded and user is authenticated
-    // This assumes a function to fetch user balance exists and returns { coins: ..., gems: ... }
-    // For now, using placeholder values or fetching from a mock API
-    const mockUserBalance = { coins: 1000.00, gems: 50 }; // Placeholder
-    updateBalanceDisplay(mockUserBalance.coins, mockUserBalance.gems);
+    // Initial balance and user info will be fetched by updateAuthContainer if logged in
 });
 
 // Function to set up the currency switch logic
@@ -152,28 +148,47 @@ function getCurrencyPreference() {
 }
 
 // Function to update the authentication container in the header
-function updateAuthContainer() {
+async function updateAuthContainer() { // Made async to allow fetching user data
     const authContainer = document.getElementById('auth-container');
     const logoutBtn = document.getElementById('logout-btn');
     const token = localStorage.getItem('auth_token'); // Assuming 'auth_token' is used for login status
 
     if (authContainer) {
         if (token) {
-            // User is logged in, display avatar and name (placeholder for now)
-            const steamId = getDecodedSteamID(); // Reuse existing function
-            // In a real app, you'd fetch the username from your backend using the steamId
-            const username = `Steam User ${steamId ? steamId.substring(0, 8) : ''}`; // Placeholder for now
-            authContainer.innerHTML = `
-                <div class="user-info">
-                    <img src="https://avatars.akamai.steamstatic.com/8600000000000000000000000000000000000000_full.jpg" alt="User Avatar" class="avatar">
-                    <span class="username">${username}</span>
-                </div>
-            `;
-            if (logoutBtn) logoutBtn.style.display = 'block';
-            // Also update balance here if user is logged in
-            // Assuming a function to fetch user balance exists and returns { coins: ..., gems: ... }
-            const mockUserBalance = { coins: 1000.00, gems: 50 }; // Placeholder
-            updateBalanceDisplay(mockUserBalance.coins, mockUserBalance.gems);
+            const steamId = getDecodedSteamID();
+            if (steamId) {
+                try {
+                    const userData = await apiGet(`/user/profile/${steamId}`);
+                    authContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="${userData.avatar_url || 'https://avatars.akamai.steamstatic.com/8600000000000000000000000000000000000000_full.jpg'}" alt="User Avatar" class="avatar">
+                            <span class="username">${userData.username || `Steam User ${steamId.substring(0, 8)}`}</span>
+                        </div>
+                    `;
+                    updateBalanceDisplay(userData.balance.COIN, userData.balance.GEM);
+                    if (logoutBtn) logoutBtn.style.display = 'block';
+                } catch (error) {
+                    console.error("Error fetching user profile:", error);
+                    // Fallback to generic display if API call fails
+                    authContainer.innerHTML = `
+                        <div class="user-info">
+                            <img src="https://avatars.akamai.steamstatic.com/8600000000000000000000000000000000000000_full.jpg" alt="User Avatar" class="avatar">
+                            <span class="username">Steam User ${steamId.substring(0, 8)}</span>
+                        </div>
+                    `;
+                    updateBalanceDisplay(0, 0); // Display zero balance on error
+                    if (logoutBtn) logoutBtn.style.display = 'block';
+                }
+            } else {
+                // If steamId is not available from token, treat as logged out
+                authContainer.innerHTML = `
+                    <button class="login-steam-btn" onclick="loginWithSteam()">
+                        <i class="fab fa-steam"></i> Login with Steam
+                    </button>
+                `;
+                updateBalanceDisplay(0, 0);
+                if (logoutBtn) logoutBtn.style.display = 'none';
+            }
         } else {
             // User is logged out, display login button
             authContainer.innerHTML = `
@@ -181,6 +196,7 @@ function updateAuthContainer() {
                     <i class="fab fa-steam"></i> Login with Steam
                 </button>
             `;
+            updateBalanceDisplay(0, 0);
             if (logoutBtn) logoutBtn.style.display = 'none';
         }
     }
