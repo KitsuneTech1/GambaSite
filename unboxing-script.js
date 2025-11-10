@@ -11,17 +11,13 @@ function normalizeSkinName(skinName) {
     ];
 
     let baseName = skinName;
-    // Remove the ★ prefix if present, as it's not in the Python script's base_name
+    // First, remove the ★ prefix if present
     if (baseName.startsWith('★')) {
         baseName = baseName.substring(1);
     }
-    // Remove "Souvenir" and "StatTrak" prefixes
-    if (baseName.startsWith('Souvenir ')) {
-        baseName = baseName.substring('Souvenir '.length);
-    }
-    if (baseName.startsWith('StatTrak™ ')) {
-        baseName = baseName.substring('StatTrak™ '.length);
-    }
+    // Then, remove "Souvenir" and "StatTrak" prefixes using regex for robustness
+    // This ensures these are removed before any other normalization or knife logic
+    baseName = baseName.replace(/^(Souvenir|StatTrak™?)\s*/i, ''); // Added '?' for optional ™
 
     let normalizedBaseName = baseName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     let newFilenameBase = "";
