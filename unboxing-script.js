@@ -166,7 +166,7 @@ async function fetchCases() {
 }
 
 async function startSpin(caseObj) {
-    const authToken = localStorage.getItem("authToken"); // Assuming authToken is stored here
+    const authToken = localStorage.getItem("auth_token"); // Assuming auth_token is stored here
     if (!authToken) {
         alert("Please log in to open cases.");
         return;
@@ -218,11 +218,13 @@ async function startSpin(caseObj) {
         unboxingReel.offsetWidth; 
 
         // Spin fast for 3 seconds, then slow down for 2 seconds (total 5s)
-        unboxingReel.style.transition = "transform 3s linear"; // Fast spin for 3 seconds
+        // Total spin duration will be 5.5 seconds (3s fast + 2.5s gradual slowdown)
+        unboxingReel.style.transition = "transform 3s linear"; // Initial fast spin for 3 seconds
         unboxingReel.style.transform = `translateX(-${scrollPosition}px)`;
 
         setTimeout(() => {
-            unboxingReel.style.transition = "transform 2s cubic-bezier(0.1, 0.7, 0.5, 1)"; // Slow down for 2 seconds
+            // Gradual slowdown for the last 2.5 seconds
+            unboxingReel.style.transition = "transform 2.5s cubic-bezier(0.1, 0.7, 0.5, 1)";
             unboxingReel.style.transform = `translateX(-${scrollPosition}px)`; // Ensure it stays at the target
 
             setTimeout(() => {
@@ -246,8 +248,8 @@ async function startSpin(caseObj) {
                 // Add notification (simple console log for now, can be expanded)
                 console.log(`You unboxed: ${winningItemWithWear.name} worth $${winningItemWithWear.price.toFixed(2)}!`);
 
-            }, 1000); // After the slow down animation (1 second)
-        }, 3000); // After the fast spin animation (3 seconds)
+            }, 2500); // After the gradual slowdown animation (2.5 seconds)
+        }, 3000); // After the initial fast spin animation (3 seconds)
 
     } catch (error) {
         console.error("Error opening case:", error);
