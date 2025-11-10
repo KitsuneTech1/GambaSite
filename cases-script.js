@@ -30,9 +30,9 @@ function normalizeSkinName(skinName) {
             const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             
             if (normalizedSkinPart) {
-                newFilenameBase = `${normalizedKnifeType}_${normalizedSkinPart}`;
+                newFilenameBase = `${normalizedKnifeType}${normalizedKnifeType}${normalizedSkinPart}`;
             } else {
-                newFilenameBase = normalizedKnifeType;
+                newFilenameBase = `${normalizedKnifeType}${normalizedKnifeType}`;
             }
             break;
         }
