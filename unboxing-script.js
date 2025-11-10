@@ -186,16 +186,23 @@ async function startSpin(caseObj) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            let errorMessage = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorMessage;
+            } catch (e) {
+                // If response is not JSON, use text
+                errorMessage = await response.text() || errorMessage;
+            }
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
         const winningItemWithWear = {
-            name: result.item_name,
-            image: getImagePath(result.item_name), // Use getImagePath for the winning item
+            name: result.item,
+            image: getImagePath(result.item), // Use getImagePath for the winning item
             rarity: result.rarity || "common", // Assuming rarity is returned
-            price: result.item_value // Assuming item_value is returned
+            price: result.value // Assuming item_value is returned
         };
 
         if (!winningItemWithWear) {
