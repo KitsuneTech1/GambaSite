@@ -1,52 +1,51 @@
-const API_BASE = "https://api.tryharderapi.lol";
+// Helper function to normalize skin names for matching with image filenames
+function normalizeSkinName(skinName) {
+    // This function must exactly match the Python script's normalization logic
+    const knifeTypes = [
+        "M9 Bayonet", "Karambit", "Huntsman Knife", "Butterfly Knife", "Falchion Knife",
+        "Shadow Daggers", "Bowie Knife", "Ursus Knife", "Navaja Knife", "Stiletto Knife",
+        "Talon Knife", "Survival Knife", "Paracord Knife", "Skeleton Knife", "Nomad Knife",
+        "Classic Knife", "Bayonet", "Flip Knife", "Gut Knife", "Falchion Knife", "Daggers"
+    ];
 
-let skinNameMap = {}; // To store the mapping from skin_name_mapping.json
-
-// Function to load the skin name mapping
-async function loadSkinNameMapping() {
-    try {
-        const response = await fetch('/skin_name_mapping.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        skinNameMap = await response.json();
-        console.log("Skin name mapping loaded successfully.");
-    } catch (error) {
-        console.error("Error loading skin name mapping:", error);
+    let baseName = skinName;
+    // Remove the ★ prefix if present, as it's not in the Python script's base_name
+    if (baseName.startsWith('★')) {
+        baseName = baseName.substring(1);
     }
+
+    let normalizedBaseName = baseName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    let newFilenameBase = "";
+    
+    let isKnife = false;
+    for (const knifeType of knifeTypes) {
+        const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        if (normalizedBaseName.startsWith(normalizedKnifeType)) {
+            isKnife = true;
+            const skinPart = baseName.replace(knifeType, '').trim(); // Use original baseName for replacement
+            const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            
+            if (normalizedSkinPart) {
+                newFilenameBase = `${normalizedKnifeType}_${normalizedSkinPart}`;
+            } else {
+                newFilenameBase = normalizedKnifeType;
+            }
+            break;
+        }
+    }
+    
+    if (!isKnife) {
+        newFilenameBase = normalizedBaseName;
+    }
+    
+    return newFilenameBase;
 }
 
 function getImagePath(skinName) {
-    // The skinName from the API might have " | " or other characters.
-    // We need to find the corresponding key in our mapping.
-    // The keys in skinNameMap are the original filenames without extension.
-    // So, we need to find a key that closely matches the skinName.
-
-    // First, try a direct lookup if the skinName matches an original filename base
-    if (skinNameMap[skinName]) {
-        return `/GambaSite/all_skins_in_game/${skinNameMap[skinName]}`;
-    }
-
-    // If not a direct match, try to normalize the skinName from the API
-    // and find a matching key in the map.
-    // This requires iterating through the map to find a match, which is not ideal for performance
-    // but necessary given the current structure.
-    const normalizedApiSkinName = skinName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-    for (const originalFileNameBase in skinNameMap) {
-        const normalizedMapKey = originalFileNameBase.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        if (normalizedApiSkinName === normalizedMapKey) {
-            return `/GambaSite/all_skins_in_game/${skinNameMap[originalFileNameBase]}`;
-        }
-    }
-
-    // Fallback if no match is found
-    console.warn(`Image not found for skin: ${skinName}. Using fallback.`);
-    // This fallback will likely not work if the file was renamed
-    return `/GambaSite/all_skins_in_game/${skinName.replace(/[^a-zA-Z0-9]/g, '')}.png`;
+    const normalizedFileName = normalizeSkinName(skinName);
+    return `/GambaSite/all_skins_in_game/${normalizedFileName}.png`;
 }
 
-// Define a list of expensive skins for the scroller (this can remain hardcoded or be fetched from another endpoint if available)
 const expensiveSkins = [
     { name: "AWP | Dragon Lore", image: getImagePath("AWP | Dragon Lore"), price: 2000.00 },
     { name: "AK-47 | Fire Serpent", image: getImagePath("AK-47 | Fire Serpent"), price: 500.00 },
@@ -278,10 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Initial render and display update
-    loadSkinNameMapping().then(() => {
-        fetchCases(); // Fetch cases on load after mapping is loaded
-        updateSliderDisplay();
-    });
+    fetchCases(); // Fetch cases on load
+    updateSliderDisplay();
 
     // Event listeners for filters
     if (caseSearchInput) {
