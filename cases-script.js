@@ -45,8 +45,8 @@ function normalizeSkinName(skinName) {
 
 function getImagePath(skinName) {
     const normalizedFileName = normalizeSkinName(skinName);
-    // Using an absolute path from the root, as per user feedback and 404 errors
-    return `/all_skins_in_game/${normalizedFileName}.png`;
+    // Appending '1' to the filename as per user's request to force GitHub update
+    return `/all_skins_in_game/${normalizedFileName}1.png`;
 }
 
 const expensiveSkins = [
