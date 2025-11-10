@@ -12,6 +12,8 @@ function normalizeSkinName(skinName) {
 
     let baseName = skinName;
     // Remove the ★ prefix if present, as it's not in the Python script's base_name
+    // Remove "Souvenir" or "StatTrak™" prefixes and the ★ prefix
+    baseName = baseName.replace(/^(Souvenir|StatTrak™)\s*/i, '');
     if (baseName.startsWith('★')) {
         baseName = baseName.substring(1);
     }
@@ -219,6 +221,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Function to update slider background
+    const updateSliderBackground = () => {
+        const minVal = parseFloat(minPriceSlider.value);
+        const maxVal = parseFloat(maxPriceSlider.value);
+        const minPercent = (minVal / parseFloat(minPriceSlider.max)) * 100;
+        const maxPercent = (maxVal / parseFloat(maxPriceSlider.max)) * 100;
+        const sliderContainer = document.querySelector('.price-range .slider-container');
+        if (sliderContainer) {
+            sliderContainer.style.background = `linear-gradient(to right, #555 ${minPercent}%, #ff00ff ${minPercent}%, #ff00ff ${maxPercent}%, #555 ${maxPercent}%)`;
+        }
+    };
+
     // Function to update slider display values
     const updateSliderDisplay = () => {
         if (currentMinPriceSpan && minPriceSlider) {
@@ -227,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentMaxPriceSpan && maxPriceSlider) {
             currentMaxPriceSpan.textContent = parseFloat(maxPriceSlider.value).toFixed(2);
         }
+        updateSliderBackground(); // Update background whenever display values change
     };
 
     // Function to render cases
@@ -281,11 +296,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial render and display update
     fetchCases(); // Fetch cases on load
-    updateSliderDisplay();
+    updateSliderDisplay(); // Initial update of display and background
 
     // Event listeners for filters
     if (caseSearchInput) {
         caseSearchInput.addEventListener('input', applyFilters);
+    }
+
+    if (minPriceSlider) {
+        minPriceSlider.addEventListener('input', () => {
+            if (parseFloat(minPriceSlider.value) > parseFloat(maxPriceSlider.value)) {
+                minPriceSlider.value = maxPriceSlider.value;
+            }
+            applyFilters();
+            updateSliderBackground(); // Update background on slider move
+        });
+    }
+
+    if (maxPriceSlider) {
+        maxPriceSlider.addEventListener('input', () => {
+            if (parseFloat(maxPriceSlider.value) < parseFloat(minPriceSlider.value)) {
+                maxPriceSlider.value = minPriceSlider.value;
+            }
+            applyFilters();
+            updateSliderBackground(); // Update background on slider move
+        });
     }
 
     if (minPriceSlider) {

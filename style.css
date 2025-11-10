@@ -866,7 +866,7 @@ body {
     -webkit-appearance: none;
     appearance: none;
     height: 5px; /* Height of the actual draggable part */
-    background: #555; /* Default track color */
+    background: transparent; /* Make track transparent, fill will be handled by JS on container */
     border-radius: 5px;
     outline: none;
     margin: 0;
