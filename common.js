@@ -3,6 +3,7 @@ const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
 const authorizedSteamID = "76561199163202169";
 
 document.addEventListener("DOMContentLoaded", () => {
+    clearAuthData(); // Clear old tokens on application load
     // Function to load header.html
     async function loadHeader() {
         try {
@@ -238,19 +239,45 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Decoded Token:", decodedToken);
 
             if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
-                console.log("Saving token and user data to localStorage...");
-                localStorage.setItem("auth_token", token);
-                localStorage.setItem("userDisplayName", decodedToken.personaname); // Changed displayName to personaName
-                localStorage.setItem("userAvatar", decodedToken.avatar);
-                localStorage.setItem("steamid", decodedToken.steamid);
-                console.log("localStorage updated.");
+            console.log("Saving user data to localStorage and authenticating with backend...");
+            localStorage.setItem("userDisplayName", decodedToken.personaname);
+            localStorage.setItem("userAvatar", decodedToken.avatar);
+            localStorage.setItem("steamid", decodedToken.steamid);
+
+            try {
+                const authResponse = await fetch(`${STEAM_AUTH_API_BASE}/auth/steam`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        steam_id: decodedToken.steamid,
+                        jwt_token: token // The JWT token from Steam
+                    })
+                });
+
+                if (!authResponse.ok) {
+                    const errorData = await authResponse.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${authResponse.status}`);
+                }
+
+                const authData = await authResponse.json();
+                localStorage.setItem("auth_token", authData.auth_token); // Store the new auth_token from backend
+                console.log("New auth_token from backend stored.");
 
                 await fetchAndDisplayUserDetails(decodedToken.steamid);
-                initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
-                
+                initializeWebSocket(decodedToken.steamid);
+
                 console.log("Cleaning URL...");
-                window.history.replaceState({}, document.title, window.location.pathname); // Clean the URL
+                window.history.replaceState({}, document.title, window.location.pathname);
                 console.log("URL cleaned.");
+
+            } catch (error) {
+                console.error("Error during backend authentication:", error);
+                clearAuthData();
+                showLoginButton();
+                alert(`Authentication failed: ${error.message}. Please try again.`);
+            }
             } else {
                 console.error("Invalid or incomplete JWT payload.");
                 clearAuthData(); // Clear invalid data
