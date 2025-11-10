@@ -11,12 +11,13 @@ function normalizeSkinName(skinName) {
     ];
 
     let baseName = skinName;
-    // Remove the ★ prefix if present, as it's not in the Python script's base_name
-    // Remove "Souvenir" or "StatTrak™" prefixes and the ★ prefix
-    baseName = baseName.replace(/^(Souvenir|StatTrak™)\s*/i, '');
-    if (baseName.startsWith('★')) {
-        baseName = baseName.substring(1);
-    }
+    // First, remove the ★ prefix if present
+if (baseName.startsWith('★')) {
+    baseName = baseName.substring(1).trim();
+}
+    // Then, remove "Souvenir" and "StatTrak" prefixes using regex for robustness
+    // This ensures these are removed before any other normalization or knife logic
+    baseName = baseName.replace(/^(Souvenir|StatTrak™?)\s*/i, ''); // Added '?' for optional ™
 
     let normalizedBaseName = baseName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     let newFilenameBase = "";
@@ -26,7 +27,15 @@ function normalizeSkinName(skinName) {
         const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
         if (normalizedBaseName.startsWith(normalizedKnifeType)) {
             isKnife = true;
-            const skinPart = baseName.replace(knifeType, '').trim(); // Use original baseName for replacement
+            let skinPart = baseName;
+            if (skinPart.startsWith(knifeType)) {
+                skinPart = skinPart.substring(knifeType.length).trim();
+            }
+            // Also remove common delimiters like '|' or '-' if they are at the beginning of skinPart
+            if (skinPart.startsWith('|') || skinPart.startsWith('-')) {
+                skinPart = skinPart.substring(1).trim();
+            }
+
             const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             
             if (normalizedSkinPart) {
@@ -48,7 +57,7 @@ function normalizeSkinName(skinName) {
 function getImagePath(skinName) {
     const normalizedFileName = normalizeSkinName(skinName);
     // Appending '1' to the filename as per user's request to force GitHub update
-    return `/all_skins_in_game/${normalizedFileName}1.png`;
+    return `/GambaSite/all_skins_in_game/${normalizedFileName}1.png`;
 }
 
 const expensiveSkins = [
