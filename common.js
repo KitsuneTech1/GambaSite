@@ -1,5 +1,5 @@
 const GENERAL_API_BASE = "https://api.tryharderapi.lol";
-const STEAM_AUTH_API_BASE = "https://api.playkitsune.lol";
+const STEAM_AUTH_API_BASE = GENERAL_API_BASE; // Use the same base for authentication as general API
 const authorizedSteamID = "76561199163202169";
 
 document.addEventListener("DOMContentLoaded", () => {
