@@ -12,9 +12,9 @@ function normalizeSkinName(skinName) {
 
     let baseName = skinName;
     // First, remove the ★ prefix if present
-    if (baseName.startsWith('★')) {
-        baseName = baseName.substring(1);
-    }
+if (baseName.startsWith('★')) {
+    baseName = baseName.substring(1).trim();
+}
     // Then, remove "Souvenir" and "StatTrak" prefixes using regex for robustness
     // This ensures these are removed before any other normalization or knife logic
     baseName = baseName.replace(/^(Souvenir|StatTrak™?)\s*/i, ''); // Added '?' for optional ™
