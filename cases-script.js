@@ -57,7 +57,7 @@ if (baseName.startsWith('★')) {
 function getImagePath(skinName) {
     const normalizedFileName = normalizeSkinName(skinName);
     // Appending '1' to the filename as per user's request to force GitHub update
-    return `/GambaSite/all_skins_in_game/${normalizedFileName}1.png`;
+    return `/all_skins_in_game/${normalizedFileName}1.png`;
 }
 
 const expensiveSkins = [
