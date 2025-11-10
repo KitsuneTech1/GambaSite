@@ -15,6 +15,13 @@ function normalizeSkinName(skinName) {
     if (baseName.startsWith('★')) {
         baseName = baseName.substring(1);
     }
+    // Remove "Souvenir" and "StatTrak" prefixes
+    if (baseName.startsWith('Souvenir ')) {
+        baseName = baseName.substring('Souvenir '.length);
+    }
+    if (baseName.startsWith('StatTrak™ ')) {
+        baseName = baseName.substring('StatTrak™ '.length);
+    }
 
     let normalizedBaseName = baseName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     let newFilenameBase = "";
@@ -24,7 +31,15 @@ function normalizeSkinName(skinName) {
         const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
         if (normalizedBaseName.startsWith(normalizedKnifeType)) {
             isKnife = true;
-            const skinPart = baseName.replace(knifeType, '').trim(); // Use original baseName for replacement
+            let skinPart = baseName;
+            if (skinPart.startsWith(knifeType)) {
+                skinPart = skinPart.substring(knifeType.length).trim();
+            }
+            // Also remove common delimiters like '|' or '-' if they are at the beginning of skinPart
+            if (skinPart.startsWith('|') || skinPart.startsWith('-')) {
+                skinPart = skinPart.substring(1).trim();
+            }
+
             const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             
             if (normalizedSkinPart) {
