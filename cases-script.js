@@ -1,35 +1,49 @@
 const API_BASE = "https://api.tryharderapi.lol";
 
-// Helper function to normalize skin names for matching with image filenames
-function normalizeSkinName(skinName) {
-    // Specific handling for knife names to match the Python script's output
-    const knifeTypes = [
-        "M9 Bayonet", "Karambit", "Huntsman Knife", "Butterfly Knife", "Falchion Knife",
-        "Shadow Daggers", "Bowie Knife", "Ursus Knife", "Navaja Knife", "Stiletto Knife",
-        "Talon Knife", "Survival Knife", "Paracord Knife", "Skeleton Knife", "Nomad Knife",
-        "Classic Knife", "Bayonet", "Flip Knife", "Gut Knife", "Falchion Knife", "Daggers"
-    ];
+let skinNameMap = {}; // To store the mapping from skin_name_mapping.json
 
-    let normalizedName = skinName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-
-    for (const knifeType of knifeTypes) {
-        const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        if (normalizedName.startsWith(normalizedKnifeType)) {
-            const skinPart = normalizedName.substring(normalizedKnifeType.length);
-            if (skinPart) {
-                return `${normalizedKnifeType}_${skinPart}`;
-            } else {
-                return normalizedKnifeType; // For cases like "M9 Bayonet" with no specific skin
-            }
+// Function to load the skin name mapping
+async function loadSkinNameMapping() {
+    try {
+        const response = await fetch('/skin_name_mapping.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        skinNameMap = await response.json();
+        console.log("Skin name mapping loaded successfully.");
+    } catch (error) {
+        console.error("Error loading skin name mapping:", error);
     }
-    return normalizedName;
 }
 
 function getImagePath(skinName) {
-    const normalizedName = normalizeSkinName(skinName);
-    // Assuming all images are now in lowercase and follow the normalized_name.png format
-    return `/GambaSite/all_skins_in_game/${normalizedName}.png`;
+    // The skinName from the API might have " | " or other characters.
+    // We need to find the corresponding key in our mapping.
+    // The keys in skinNameMap are the original filenames without extension.
+    // So, we need to find a key that closely matches the skinName.
+
+    // First, try a direct lookup if the skinName matches an original filename base
+    if (skinNameMap[skinName]) {
+        return `/GambaSite/all_skins_in_game/${skinNameMap[skinName]}`;
+    }
+
+    // If not a direct match, try to normalize the skinName from the API
+    // and find a matching key in the map.
+    // This requires iterating through the map to find a match, which is not ideal for performance
+    // but necessary given the current structure.
+    const normalizedApiSkinName = skinName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+    for (const originalFileNameBase in skinNameMap) {
+        const normalizedMapKey = originalFileNameBase.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        if (normalizedApiSkinName === normalizedMapKey) {
+            return `/GambaSite/all_skins_in_game/${skinNameMap[originalFileNameBase]}`;
+        }
+    }
+
+    // Fallback if no match is found
+    console.warn(`Image not found for skin: ${skinName}. Using fallback.`);
+    // This fallback will likely not work if the file was renamed
+    return `/GambaSite/all_skins_in_game/${skinName.replace(/[^a-zA-Z0-9]/g, '')}.png`;
 }
 
 // Define a list of expensive skins for the scroller (this can remain hardcoded or be fetched from another endpoint if available)
@@ -264,8 +278,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Initial render and display update
-    fetchCases(); // Fetch cases on load
-    updateSliderDisplay();
+    loadSkinNameMapping().then(() => {
+        fetchCases(); // Fetch cases on load after mapping is loaded
+        updateSliderDisplay();
+    });
 
     // Event listeners for filters
     if (caseSearchInput) {
