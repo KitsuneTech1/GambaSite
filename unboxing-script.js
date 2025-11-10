@@ -1,9 +1,66 @@
+const API_BASE = "https://api.tryharderapi.lol"; // Moved from cases-script.js
 
+// Helper function to normalize skin names for matching with image filenames
+function normalizeSkinName(skinName) {
+    // This function must exactly match the Python script's normalization logic
+    const knifeTypes = [
+        "M9 Bayonet", "Karambit", "Huntsman Knife", "Butterfly Knife", "Falchion Knife",
+        "Shadow Daggers", "Bowie Knife", "Ursus Knife", "Navaja Knife", "Stiletto Knife",
+        "Talon Knife", "Survival Knife", "Paracord Knife", "Skeleton Knife", "Nomad Knife",
+        "Classic Knife", "Bayonet", "Flip Knife", "Gut Knife", "Falchion Knife", "Daggers"
+    ];
 
-import { caseData, rollCrate, calculateRTP } from './cases-script.js';
+    let baseName = skinName;
+    // Remove the ★ prefix if present, as it's not in the Python script's base_name
+    if (baseName.startsWith('★')) {
+        baseName = baseName.substring(1);
+    }
+
+    let normalizedBaseName = baseName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    let newFilenameBase = "";
+    
+    let isKnife = false;
+    for (const knifeType of knifeTypes) {
+        const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        if (normalizedBaseName.startsWith(normalizedKnifeType)) {
+            isKnife = true;
+            const skinPart = baseName.replace(knifeType, '').trim(); // Use original baseName for replacement
+            const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            
+            if (normalizedSkinPart) {
+                newFilenameBase = `${normalizedKnifeType}_${normalizedSkinPart}`;
+            } else {
+                newFilenameBase = normalizedKnifeType;
+            }
+            break;
+        }
+    }
+    
+    if (!isKnife) {
+        newFilenameBase = normalizedBaseName;
+    }
+    
+    return newFilenameBase;
+}
+
+function getImagePath(skinName) {
+    const normalizedFileName = normalizeSkinName(skinName);
+    // Appending '1' to the filename as per user's request to force GitHub update
+    return `/GambaSite/all_skins_in_game/${normalizedFileName}1.png`;
+}
+
+let allCases = []; // Declare allCases at the top level, will be populated by fetch
+
+function calculateRTP(caseObj) {
+    let expectedValue = 0;
+    caseObj.drops.forEach(drop => {
+        expectedValue += drop.odds * drop.value;
+    });
+    return (expectedValue / caseObj.price * 100).toFixed(2);
+}
 
 function getCaseById(caseId) {
-    return caseData.find(c => c.id === caseId);
+    return allCases.find(c => c.id === caseId);
 }
 
 function populateUnboxingPage(caseObj) {
@@ -44,7 +101,7 @@ function populateReel(caseObj, winningItem = null) {
         items.push({
             name: randomDrop.name,
             image: randomDrop.image,
-            rarity: randomDrop.rarity
+            rarity: randomDrop.rarity // Assuming rarity is part of the drop object
         });
     }
 
@@ -61,16 +118,74 @@ function populateReel(caseObj, winningItem = null) {
     });
 }
 
+async function fetchCases() {
+    try {
+        const response = await fetch(`${API_BASE}/crate/list`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const cratesData = await response.json();
+
+        allCases = cratesData.map(crate => {
+            // Find the most valuable drop to use as the main image for the crate
+            const mostValuableDrop = crate.drops.reduce((prev, current) => {
+                return (prev.value > current.value) ? prev : current;
+            });
+
+            return {
+                id: crate.id,
+                name: crate.name,
+                price: crate.price,
+                currency: crate.currency,
+                volatility: crate.volatility,
+                image: getImagePath(mostValuableDrop.name), // Construct image path using the new function
+                drops: crate.drops.map(drop => ({
+                    name: drop.name,
+                    value: drop.value,
+                    odds: drop.chance, // Map 'chance' to 'odds'
+                    image: getImagePath(drop.name), // Construct image path for drops using the new function
+                    rarity: drop.rarity || "common" // Assuming rarity might be in drop, default to common
+                }))
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching cases:", error);
+        // Handle error, e.g., display a message to the user
+    }
+}
+
 async function startSpin(caseObj) {
-    const steamid = localStorage.getItem("steamid");
-    if (!steamid) {
+    const authToken = localStorage.getItem("authToken"); // Assuming authToken is stored here
+    if (!authToken) {
         alert("Please log in to open cases.");
         return;
     }
 
     try {
-        // Use the local rollCrate function instead of fetching from API
-        const winningItemWithWear = rollCrate(caseObj.id);
+        const response = await fetch(`${API_BASE}/crate/open`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${authToken}`
+            },
+            body: JSON.stringify({
+                crate_id: caseObj.id,
+                currency_code: caseObj.currency // Use the currency from the case object
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        const winningItemWithWear = {
+            name: result.item_name,
+            image: getImagePath(result.item_name), // Use getImagePath for the winning item
+            rarity: result.rarity || "common", // Assuming rarity is returned
+            price: result.item_value // Assuming item_value is returned
+        };
 
         if (!winningItemWithWear) {
             alert("Error: Could not determine winning item.");
@@ -125,11 +240,13 @@ async function startSpin(caseObj) {
 
     } catch (error) {
         console.error("Error opening case:", error);
-        alert("An error occurred while opening the case. Please try again.");
+        alert(`An error occurred while opening the case: ${error.message}. Please try again.`);
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    await fetchCases(); // Ensure cases are fetched before proceeding
+
     const urlParams = new URLSearchParams(window.location.search);
     const caseId = urlParams.get("caseId");
     const selectedCase = getCaseById(caseId);
