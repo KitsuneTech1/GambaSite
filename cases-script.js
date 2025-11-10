@@ -1,19 +1,51 @@
 const API_BASE = "https://api.tryharderapi.lol";
 
+// Helper function to normalize skin names for matching with image filenames
+function normalizeSkinName(skinName) {
+    // Specific handling for knife names to match the Python script's output
+    const knifeTypes = [
+        "M9 Bayonet", "Karambit", "Huntsman Knife", "Butterfly Knife", "Falchion Knife",
+        "Shadow Daggers", "Bowie Knife", "Ursus Knife", "Navaja Knife", "Stiletto Knife",
+        "Talon Knife", "Survival Knife", "Paracord Knife", "Skeleton Knife", "Nomad Knife",
+        "Classic Knife", "Bayonet", "Flip Knife", "Gut Knife", "Falchion Knife", "Daggers"
+    ];
+
+    let normalizedName = skinName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+    for (const knifeType of knifeTypes) {
+        const normalizedKnifeType = knifeType.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+        if (normalizedName.startsWith(normalizedKnifeType)) {
+            const skinPart = normalizedName.substring(normalizedKnifeType.length);
+            if (skinPart) {
+                return `${normalizedKnifeType}_${skinPart}`;
+            } else {
+                return normalizedKnifeType; // For cases like "M9 Bayonet" with no specific skin
+            }
+        }
+    }
+    return normalizedName;
+}
+
+function getImagePath(skinName) {
+    const normalizedName = normalizeSkinName(skinName);
+    // Assuming all images are now in lowercase and follow the normalized_name.png format
+    return `/GambaSite/all_skins_in_game/${normalizedName}.png`;
+}
+
 // Define a list of expensive skins for the scroller (this can remain hardcoded or be fetched from another endpoint if available)
 const expensiveSkins = [
-    { name: "AWP | Dragon Lore", image: "all_skins_in_game/AWPDragonLore.png", price: 2000.00 },
-    { name: "AK-47 | Fire Serpent", image: "all_skins_in_game/AK-47FireSerpent.png", price: 500.00 },
-    { name: "AWP | Gungnir", image: "all_skins_in_game/AWPGungnir.png", price: 1500.00 },
-    { name: "AK-47 | Wild Lotus", image: "all_skins_in_game/AK-47WildLotus.png", price: 1200.00 },
-    { name: "AWP | Medusa", image: "all_skins_in_game/AWPMedusa.png", price: 1000.00 },
-    { name: "AK-47 | Gold Arabesque", image: "all_skins_in_game/AK-47GoldArabesque.png", price: 800.00 },
-    { name: "AWP | The Prince", image: "all_skins_in_game/AWPThePrince.png", price: 700.00 },
-    { name: "AK-47 | Hydroponic", image: "all_skins_in_game/AK-47Hydroponic.png", price: 400.00 },
-    { name: "AWP | Fade", image: "all_skins_in_game/AWPFade.png", price: 300.00 },
-    { name: "AK-47 | Neon Revolution", image: "all_skins_in_game/AK-47NeonRevolution.png", price: 150.00 },
-    { name: "AWP | Printstream", image: "all_skins_in_game/AWPPrintstream.png", price: 250.00 },
-    { name: "AK-47 | Bloodsport", image: "all_skins_in_game/AK-47Bloodsport.png", price: 180.00 },
+    { name: "AWP | Dragon Lore", image: getImagePath("AWP | Dragon Lore"), price: 2000.00 },
+    { name: "AK-47 | Fire Serpent", image: getImagePath("AK-47 | Fire Serpent"), price: 500.00 },
+    { name: "AWP | Gungnir", image: getImagePath("AWP | Gungnir"), price: 1500.00 },
+    { name: "AK-47 | Wild Lotus", image: getImagePath("AK-47 | Wild Lotus"), price: 1200.00 },
+    { name: "AWP | Medusa", image: getImagePath("AWP | Medusa"), price: 1000.00 },
+    { name: "AK-47 | Gold Arabesque", image: getImagePath("AK-47 | Gold Arabesque"), price: 800.00 },
+    { name: "AWP | The Prince", image: getImagePath("AWP | The Prince"), price: 700.00 },
+    { name: "AK-47 | Hydroponic", image: getImagePath("AK-47 | Hydroponic"), price: 400.00 },
+    { name: "AWP | Fade", image: getImagePath("AWP | Fade"), price: 300.00 },
+    { name: "AK-47 | Neon Revolution", image: getImagePath("AK-47 | Neon Revolution"), price: 150.00 },
+    { name: "AWP | Printstream", image: getImagePath("AWP | Printstream"), price: 250.00 },
+    { name: "AK-47 | Bloodsport", image: getImagePath("AK-47 | Bloodsport"), price: 180.00 },
 ];
 
 export let allCases = []; // Declare allCases at the top level
@@ -153,12 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     price: crate.price,
                     currency: crate.currency,
                     volatility: crate.volatility,
-                    image: `/all_skins_in_game/${mostValuableDrop.name.replace(/[^a-zA-Z0-9]/g, '')}.png`, // Construct image path
+                    image: getImagePath(mostValuableDrop.name), // Construct image path using the new function
                     drops: crate.drops.map(drop => ({
                         name: drop.name,
                         value: drop.value,
                         odds: drop.chance, // Map 'chance' to 'odds'
-                        image: `/all_skins_in_game/${drop.name.replace(/[^a-zA-Z0-9]/g, '')}.png` // Construct image path for drops
+                        image: getImagePath(drop.name) // Construct image path for drops using the new function
                     }))
                 };
             });
