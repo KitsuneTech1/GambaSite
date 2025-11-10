@@ -1,3 +1,5 @@
+const API_BASE = "https://api.tryharderapi.lol";
+
 // Helper function to normalize skin names for matching with image filenames
 function normalizeSkinName(skinName) {
     // This function must exactly match the Python script's normalization logic
@@ -43,7 +45,8 @@ function normalizeSkinName(skinName) {
 
 function getImagePath(skinName) {
     const normalizedFileName = normalizeSkinName(skinName);
-    return `/GambaSite/all_skins_in_game/${normalizedFileName}.png`;
+    // Using an absolute path from the root, as per user feedback and 404 errors
+    return `/all_skins_in_game/${normalizedFileName}.png`;
 }
 
 const expensiveSkins = [
