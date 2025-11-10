@@ -260,7 +260,8 @@ async function startSpin(caseObj) {
 
     } catch (error) {
         console.error("Error opening case:", error);
-        alert(`An error occurred while opening the case: ${error.message}. Please try again.`);
+        // Ensure the alert shows the specific error message captured
+        alert(`An error occurred while opening the case: ${error.message}. Please check the console for more details.`);
     }
 }
 

@@ -139,6 +139,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Function to check if token is expired
+    function isTokenExpired(token) {
+        if (!token) return true;
+        const payload = parseJwt(token);
+        if (!payload || !payload.exp) return true; // No payload or expiration means invalid
+        const currentTime = Date.now() / 1000; // Current time in seconds
+        return payload.exp < currentTime; // Check if expiration time is in the past
+    }
+
     // Function to clear authentication data
     function clearAuthData() {
         console.log("Clearing authentication data.");
@@ -254,14 +263,21 @@ document.addEventListener("DOMContentLoaded", () => {
             
             if (storedToken && storedSteamID) {
                 console.log("Stored token found. Attempting to use it.");
-                const decodedToken = parseJwt(storedToken);
-                if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) { // Changed displayName to personaName
-                    await fetchAndDisplayUserDetails(decodedToken.steamid);
-                    initializeWebSocket(decodedToken.steamid); // Initialize WebSocket
-                } else {
-                    console.error("Stored token is invalid or incomplete.");
+                if (isTokenExpired(storedToken)) {
+                    console.log("Stored token is expired. Clearing data and showing login button.");
                     clearAuthData();
                     showLoginButton();
+                    alert("Your session has expired. Please log in again.");
+                } else {
+                    const decodedToken = parseJwt(storedToken);
+                    if (decodedToken && decodedToken.personaname && decodedToken.avatar && decodedToken.steamid) {
+                        await fetchAndDisplayUserDetails(decodedToken.steamid);
+                        initializeWebSocket(decodedToken.steamid);
+                    } else {
+                        console.error("Stored token is invalid or incomplete.");
+                        clearAuthData();
+                        showLoginButton();
+                    }
                 }
             } else {
                 console.log("No stored token found. Showing login button.");
