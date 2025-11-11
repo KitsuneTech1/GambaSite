@@ -39,9 +39,9 @@ if (baseName.startsWith('★')) {
             const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             
             if (normalizedSkinPart) {
-                newFilenameBase = `${normalizedKnifeType}${normalizedKnifeType}${normalizedSkinPart}`;
+                newFilenameBase = `${normalizedKnifeType}${normalizedSkinPart}`;
             } else {
-                newFilenameBase = `${normalizedKnifeType}${normalizedKnifeType}`;
+                newFilenameBase = normalizedKnifeType;
             }
             break;
         }
