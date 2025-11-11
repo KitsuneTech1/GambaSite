@@ -1001,6 +1001,156 @@ input:checked + .slider:before {
     color: #e0e0e0;
 }
 
+/* Purple Theme Specific Styles */
+body.purple-theme .site-title {
+    background: linear-gradient(to right, #ff00ff, #8a2be2); /* Purple/pinkish gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .gem-icon {
+    background: linear-gradient(to right, #ff00ff, #8a2be2); /* Purple/pinkish gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+}
+
+body.purple-theme .chat-message .username {
+    color: #ff00ff; /* Pinkish username color */
+}
+
+body.purple-theme .dropdown-menu li a:hover {
+    background-color: #3a3a3a; /* Keep dark background for hover */
+    color: #ff00ff; /* Pinkish hover text */
+}
+
+body.purple-theme .game-mode-tab.active {
+    background: linear-gradient(to right, #ff00ff, #8a2be2); /* Purple/pinkish gradient */
+    color: white;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .filter-tab.active {
+    background-color: #6a0dad; /* Purple background */
+    box-shadow: 0 0 8px rgba(106, 13, 173, 0.5);
+}
+
+body.purple-theme .case-card h3 {
+    color: #ff00ff; /* Pinkish title */
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+}
+
+body.purple-theme .case-price {
+    color: #ff00ff; /* Pinkish price */
+}
+
+body.purple-theme .unboxing-header h2 {
+    color: #ff00ff; /* Pinkish title */
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .unboxing-reel-container {
+    border: 2px solid #ff00ff; /* Pinkish border */
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.7);
+}
+
+body.purple-theme .unboxing-line {
+    background-color: #ff00ff; /* Pinkish color for the line */
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
+}
+
+body.purple-theme .unboxed-item-popup {
+    border: 2px solid #ff00ff; /* Pinkish border */
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .in-this-case-sidebar h3 {
+    color: #ff00ff; /* Pinkish title */
+}
+
+body.purple-theme .legal-page h1 {
+    color: #ff00ff; /* Pinkish title */
+    text-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+}
+
+body.purple-theme .legal-page h2 {
+    color: #8a2be2; /* Purple for subheadings */
+}
+
+body.purple-theme .admin-container h1 {
+    color: #ff00ff; /* Pinkish title */
+    text-shadow: 0 0 15px rgba(255, 0, 255, 0.6);
+}
+
+body.purple-theme .admin-container input[type="text"]:focus,
+body.purple-theme .admin-container input[type="number"]:focus,
+body.purple-theme .admin-container select:focus {
+    border-color: #ff00ff; /* Pinkish border */
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .footer-links h3,
+body.purple-theme .footer-contact h3,
+body.purple-theme .footer-social h3 {
+    color: #ff00ff; /* Purple/pinkish gradient */
+    text-shadow: 0 0 8px rgba(255, 0, 255, 0.3);
+}
+
+body.purple-theme .footer-social a:hover {
+    color: #ff00ff; /* Pinkish hover */
+}
+
+body.purple-theme .player-avatar {
+    border: 2px solid #ff00ff; /* Pinkish border */
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+}
+
+body.purple-theme .vs-icon {
+    color: #ff00ff; /* Pinkish color for VS icon */
+}
+
+body.purple-theme .player-btn.active {
+    background-color: #6a0dad; /* Purple background */
+    border-color: #6a0dad;
+    box-shadow: 0 0 8px rgba(106, 13, 173, 0.5);
+}
+
+body.purple-theme .spin-count-btn.active {
+    background-color: #6a0dad; /* Purple background */
+    border-color: #6a0dad;
+    box-shadow: 0 0 8px rgba(106, 13, 173, 0.5);
+}
+
+body.purple-theme .unboxed-item-name {
+    color: #ff00ff; /* Pinkish color */
+}
+
+body.purple-theme .case-drops-list .drop-item-sidebar.rarity-legendary { border-left: 5px solid #ff00ff; } /* Pinkish */
+body.purple-theme .item.rarity-legendary { border-color: #ff00ff; box-shadow: 0 0 8px rgba(255, 0, 255, 0.5); } /* Pinkish */
+
+/* Default slider background for price range */
+.price-range .slider-container {
+    background: linear-gradient(to right, #555 0%, #ff00ff 0%, #ff00ff 100%, #555 100%);
+}
+
+/* Purple theme slider background for price range */
+body.purple-theme .price-range .slider-container {
+    background: linear-gradient(to right, #555 0%, #ff00ff 0%, #ff00ff 100%, #555 100%);
+}
+
+/* Purple theme slider thumb color */
+body.purple-theme .range-slider::-webkit-slider-thumb {
+    background: #ff00ff; /* Pinkish thumb color */
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+}
+
+body.purple-theme .range-slider::-moz-range-thumb {
+    background: #ff00ff; /* Pinkish thumb color */
+    box-shadow: 0 0 5px rgba(255, 0, 255, 0.7);
+}
+
 /* Gold Theme Specific Styles */
 body.gold-theme .site-title {
     background: linear-gradient(to right, #ffcc00, #e0a800); /* Gold gradient */

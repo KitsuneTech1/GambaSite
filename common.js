@@ -376,21 +376,23 @@ document.addEventListener("DOMContentLoaded", () => {
     // Default to COINS (false for checkbox)
     let currentCurrency = localStorage.getItem("selectedCurrency") || "COIN";
 
-    function applyCurrencyTheme(currency) {
-        if (currency === "COIN") {
-            document.body.classList.add("gold-theme");
-            if (currencyToggle) currencyToggle.checked = false;
-            if (coinBalanceContainer) coinBalanceContainer.style.display = 'flex';
-            if (gemBalanceContainer) gemBalanceContainer.style.display = 'none';
-        } else { // GEM
-            document.body.classList.remove("gold-theme");
-            if (currencyToggle) currencyToggle.checked = true;
-            if (coinBalanceContainer) coinBalanceContainer.style.display = 'none';
-            if (gemBalanceContainer) gemBalanceContainer.style.display = 'flex';
-        }
-        localStorage.setItem("selectedCurrency", currency);
-        currentCurrency = currency; // Update the global variable
+function applyCurrencyTheme(currency) {
+    if (currency === "COIN") {
+        document.body.classList.add("gold-theme");
+        document.body.classList.remove("purple-theme"); // Remove purple theme
+        if (currencyToggle) currencyToggle.checked = false;
+        if (coinBalanceContainer) coinBalanceContainer.style.display = 'flex';
+        if (gemBalanceContainer) gemBalanceContainer.style.display = 'none';
+    } else { // GEM
+        document.body.classList.remove("gold-theme");
+        document.body.classList.add("purple-theme"); // Add purple theme
+        if (currencyToggle) currencyToggle.checked = true;
+        if (coinBalanceContainer) coinBalanceContainer.style.display = 'none';
+        if (gemBalanceContainer) gemBalanceContainer.style.display = 'flex';
     }
+    localStorage.setItem("selectedCurrency", currency);
+    currentCurrency = currency; // Update the global variable
+}
 
     // Initialize toggle and theme on load
     if (currencyToggle) {
