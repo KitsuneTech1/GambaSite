@@ -251,7 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        steam_id: decodedToken.steamid
+                        steam_id: decodedToken.steamid,
+                        token: token
                     })
                 });
 
