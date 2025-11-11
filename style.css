@@ -973,15 +973,181 @@ body {
 }
 
 input:checked + .slider {
-    background-color: #4CAF50;
+    background-color: #8a2be2; /* Purple for Gems */
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #4CAF50;
+    box-shadow: 0 0 1px #8a2be2;
 }
 
 input:checked + .slider:before {
     transform: translateX(14px);
+}
+
+/* Currency Toggle Specific Styles */
+.currency-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #2a2a2a;
+    padding: 8px 15px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.currency-label {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #e0e0e0;
+}
+
+/* Gold Theme Specific Styles */
+body.gold-theme .site-title {
+    background: linear-gradient(to right, #ffcc00, #e0a800); /* Gold gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Gold glowing effect */
+}
+
+body.gold-theme .gem-icon {
+    background: linear-gradient(to right, #ffcc00, #e0a800); /* Gold gradient */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 5px rgba(255, 204, 0, 0.7); /* Gold glowing effect */
+}
+
+body.gold-theme .chat-message .username {
+    color: #ffcc00; /* Gold username color */
+}
+
+body.gold-theme .dropdown-menu li a:hover {
+    background-color: #3a3a3a; /* Keep dark background for hover */
+    color: #ffcc00; /* Gold hover text */
+}
+
+body.gold-theme .game-mode-tab.active {
+    background: linear-gradient(to right, #ffcc00, #e0a800); /* Gold gradient */
+    color: white;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .filter-tab.active {
+    background-color: #e0a800; /* Gold background */
+    box-shadow: 0 0 8px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .case-card h3 {
+    color: #ffcc00; /* Gold title */
+    text-shadow: 0 0 8px rgba(255, 204, 0, 0.3); /* Gold shadow */
+}
+
+body.gold-theme .case-price {
+    color: #ffcc00; /* Gold price */
+}
+
+body.gold-theme .unboxing-header h2 {
+    color: #ffcc00; /* Gold title */
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .unboxing-reel-container {
+    border: 2px solid #ffcc00; /* Gold border */
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); /* Gold glowing effect */
+}
+
+body.gold-theme .unboxing-line {
+    background-color: #ffcc00; /* Gold color for the line */
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.7); /* Gold glowing effect */
+}
+
+body.gold-theme .unboxed-item-popup {
+    border: 2px solid #ffcc00; /* Gold border */
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .in-this-case-sidebar h3 {
+    color: #ffcc00; /* Gold title */
+}
+
+body.gold-theme .legal-page h1 {
+    color: #ffcc00; /* Gold title */
+    text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); /* Gold shadow */
+}
+
+body.gold-theme .legal-page h2 {
+    color: #e0a800; /* Darker gold for subheadings */
+}
+
+body.gold-theme .admin-container h1 {
+    color: #ffcc00; /* Gold title */
+    text-shadow: 0 0 15px rgba(255, 204, 0, 0.6); /* Gold shadow */
+}
+
+body.gold-theme .admin-container input[type="text"]:focus,
+body.gold-theme .admin-container input[type="number"]:focus,
+body.gold-theme .admin-container select:focus {
+    border-color: #ffcc00; /* Gold border */
+    box-shadow: 0 0 8px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .footer-links h3,
+body.gold-theme .footer-contact h3,
+body.gold-theme .footer-social h3 {
+    color: #ffcc00; /* Gold title */
+    text-shadow: 0 0 8px rgba(255, 204, 0, 0.3); /* Gold shadow */
+}
+
+body.gold-theme .footer-social a:hover {
+    color: #ffcc00; /* Gold hover */
+}
+
+body.gold-theme .player-avatar {
+    border: 2px solid #ffcc00; /* Gold border */
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .vs-icon {
+    color: #ffcc00; /* Gold color for VS icon */
+}
+
+body.gold-theme .player-btn.active {
+    background-color: #e0a800; /* Gold background */
+    border-color: #e0a800;
+    box-shadow: 0 0 8px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .spin-count-btn.active {
+    background-color: #e0a800; /* Gold background */
+    border-color: #e0a800;
+    box-shadow: 0 0 8px rgba(255, 204, 0, 0.5); /* Gold shadow */
+}
+
+body.gold-theme .unboxed-item-name {
+    color: #ffcc00; /* Gold color */
+}
+
+body.gold-theme .case-drops-list .drop-item-sidebar.rarity-legendary { border-left: 5px solid #ffcc00; } /* Gold */
+body.gold-theme .item.rarity-legendary { border-color: #ffcc00; box-shadow: 0 0 8px rgba(255, 204, 0, 0.5); } /* Gold */
+
+/* Default slider background for price range */
+.price-range .slider-container {
+    background: linear-gradient(to right, #555 0%, #ff00ff 0%, #ff00ff 100%, #555 100%);
+}
+
+/* Gold theme slider background for price range */
+body.gold-theme .price-range .slider-container {
+    background: linear-gradient(to right, #555 0%, #ffcc00 0%, #ffcc00 100%, #555 100%);
+}
+
+/* Gold theme slider thumb color */
+body.gold-theme .range-slider::-webkit-slider-thumb {
+    background: #ffcc00; /* Gold thumb color */
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
+}
+
+body.gold-theme .range-slider::-moz-range-thumb {
+    background: #ffcc00; /* Gold thumb color */
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.7);
 }
 
 .player-count-filter {

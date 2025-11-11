@@ -366,6 +366,48 @@ document.addEventListener("DOMContentLoaded", () => {
         };
     }
 
+    // Currency Toggle Logic
+    const currencyToggle = document.getElementById("currency-toggle");
+    const coinBalanceDisplay = document.getElementById("coin-balance");
+    const gemBalanceDisplay = document.getElementById("gem-balance");
+    const coinBalanceContainer = coinBalanceDisplay ? coinBalanceDisplay.closest('.balance') : null;
+    const gemBalanceContainer = gemBalanceDisplay ? gemBalanceDisplay.closest('.balance') : null;
+
+    // Default to COINS (false for checkbox)
+    let currentCurrency = localStorage.getItem("selectedCurrency") || "COIN";
+
+    function applyCurrencyTheme(currency) {
+        if (currency === "COIN") {
+            document.body.classList.add("gold-theme");
+            if (currencyToggle) currencyToggle.checked = false;
+            if (coinBalanceContainer) coinBalanceContainer.style.display = 'flex';
+            if (gemBalanceContainer) gemBalanceContainer.style.display = 'none';
+        } else { // GEM
+            document.body.classList.remove("gold-theme");
+            if (currencyToggle) currencyToggle.checked = true;
+            if (coinBalanceContainer) coinBalanceContainer.style.display = 'none';
+            if (gemBalanceContainer) gemBalanceContainer.style.display = 'flex';
+        }
+        localStorage.setItem("selectedCurrency", currency);
+        currentCurrency = currency; // Update the global variable
+    }
+
+    // Initialize toggle and theme on load
+    if (currencyToggle) {
+        currencyToggle.checked = (currentCurrency === "GEM");
+        applyCurrencyTheme(currentCurrency); // Apply initial theme
+        currencyToggle.addEventListener("change", () => {
+            const newCurrency = currencyToggle.checked ? "GEM" : "COIN";
+            applyCurrencyTheme(newCurrency);
+        });
+    } else {
+        // If toggle isn't present (e.g., on pages without header), still apply theme based on stored preference
+        applyCurrencyTheme(currentCurrency);
+    }
+
+    // Expose currentCurrency globally for other scripts
+    window.getCurrentCurrency = () => currentCurrency;
+
     // Logout function (made global for onclick in header.html)
     window.logout = () => {
         clearAuthData();

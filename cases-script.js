@@ -107,14 +107,17 @@ function generateCaseCard(caseObj) {
 
     const dropItemsHtml = caseObj.drops.map(drop => {
         const dropValue = drop.value; 
+        const currencySymbol = window.getCurrentCurrency() === "COIN" ? '<i class="fas fa-coins coin-icon"></i>' : '<i class="fas fa-gem gem-icon"></i>';
 
         return `
             <div class="drop-item">
                 <img src="${drop.image}" alt="${drop.name}">
-                <p class="drop-price">$${dropValue.toFixed(2)}</p>
+                <p class="drop-price">${currencySymbol} ${dropValue.toFixed(2)}</p>
             </div>
         `;
     }).join("");
+
+    const currencySymbol = window.getCurrentCurrency() === "COIN" ? '<i class="fas fa-coins coin-icon"></i>' : '<i class="fas fa-gem gem-icon"></i>';
 
     return `
         <div class="case-card" data-case-id="${caseObj.id}">
@@ -125,7 +128,7 @@ function generateCaseCard(caseObj) {
             </div>
             <img src="${caseObj.image}" alt="${caseObj.name}" class="case-image">
             <h3>${caseObj.name}</h3>
-            <p class="case-price"><i class="fas fa-coins coin-icon"></i> ${caseObj.price.toFixed(2)}</p>
+            <p class="case-price">${currencySymbol} ${caseObj.price.toFixed(2)}</p>
             <div class="case-drops-preview">
                 ${dropItemsHtml}
             </div>

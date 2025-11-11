@@ -78,18 +78,21 @@ function populateUnboxingPage(caseObj) {
     document.getElementById("caseImage").src = caseObj.image;
     document.getElementById("caseName").textContent = caseObj.name;
     document.getElementById("caseRTP").textContent = `${calculateRTP(caseObj)}% RTP`; 
-    document.getElementById("openCasePrice").textContent = caseObj.price.toFixed(2);
+    
+    const currencySymbol = window.getCurrentCurrency() === "COIN" ? '<i class="fas fa-coins coin-icon"></i>' : '<i class="fas fa-gem gem-icon"></i>';
+    document.getElementById("openCasePrice").innerHTML = `${currencySymbol} ${caseObj.price.toFixed(2)}`;
 
     const caseDropsList = document.getElementById("caseDropsList");
     caseDropsList.innerHTML = ""; // Clear previous drops
 
     caseObj.drops.forEach(drop => {
         const dropValue = drop.value; 
+        const dropCurrencySymbol = window.getCurrentCurrency() === "COIN" ? '<i class="fas fa-coins coin-icon"></i>' : '<i class="fas fa-gem gem-icon"></i>';
         const dropItemHtml = `
             <div class="drop-item-sidebar rarity-${drop.rarity}">
                 <img src="${drop.image}" alt="${drop.name}">
                 <p>${drop.name}</p>
-                <p class="drop-price">$${dropValue.toFixed(2)}</p>
+                <p class="drop-price">${dropCurrencySymbol} ${dropValue.toFixed(2)}</p>
                 <p class="drop-odds">${(drop.odds * 100).toFixed(2)}%</p>
             </div>
         `;
