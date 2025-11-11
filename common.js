@@ -3,7 +3,6 @@ const STEAM_AUTH_API_BASE = GENERAL_API_BASE; // Use the same base for authentic
 const authorizedSteamID = "76561199163202169";
 
 document.addEventListener("DOMContentLoaded", () => {
-    clearAuthData(); // Clear old tokens on application load
     // Function to load header.html
     async function loadHeader() {
         try {
