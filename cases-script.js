@@ -36,8 +36,13 @@ if (baseName.startsWith('★')) {
                 skinPart = skinPart.substring(1).trim();
             }
 
-            const normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            let normalizedSkinPart = skinPart.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
             
+            // Remove all occurrences of the normalizedKnifeType from normalizedSkinPart
+            // This handles cases where the input skinName itself is already malformed
+            const regex = new RegExp(normalizedKnifeType, 'g');
+            normalizedSkinPart = normalizedSkinPart.replace(regex, '');
+
             if (normalizedSkinPart) {
                 newFilenameBase = `${normalizedKnifeType}${normalizedSkinPart}`;
             } else {
