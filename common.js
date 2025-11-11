@@ -316,14 +316,23 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to fetch and display user details from API
     async function fetchAndDisplayUserDetails(steamid) {
         try {
-            const response = await fetch(`${GENERAL_API_BASE}/user/by_steam?steam_id=${steamid}`);
+            const storedAuthToken = localStorage.getItem("auth_token");
+            if (!storedAuthToken) {
+                throw new Error("No authentication token found.");
+            }
+
+            const response = await fetch(`${GENERAL_API_BASE}/user/by_steam?steam_id=${steamid}`, {
+                headers: {
+                    'Authorization': `Bearer ${storedAuthToken}`
+                }
+            });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const userData = await response.json();
-            const storedToken = localStorage.getItem("auth_token");
-            const decodedToken = parseJwt(storedToken);
-            updateUI(decodedToken.personaname, decodedToken.avatar, userData.steam_id);
+            const userDisplayName = localStorage.getItem("userDisplayName");
+            const userAvatar = localStorage.getItem("userAvatar");
+            updateUI(userDisplayName, userAvatar, userData.steam_id);
         } catch (error) {
             console.error("Error fetching user details:", error);
             updateUI(localStorage.getItem("userDisplayName"), localStorage.getItem("userAvatar"), steamid); // Fallback to stored data
